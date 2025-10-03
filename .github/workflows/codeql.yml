@@ -1,5 +1,8 @@
 name: CodeQL Security Analysis
 
+# NOTE: This workflow requires Code Scanning to be enabled in repository settings:
+# Settings → Code security and analysis → Code scanning → Set up → Default
+
 on:
   push:
     branches: [ main, develop ]
@@ -45,5 +48,6 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+        continue-on-error: true  # Don't fail if Code Scanning is not enabled
         with:
           category: "/language:${{ matrix.language }}"
