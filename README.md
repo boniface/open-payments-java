@@ -31,13 +31,13 @@ A modern Java 25 SDK for the [Open Payments API](https://openpayments.dev) - ena
 
 ## Features
 
-- ✅ **Complete API Coverage** - All Open Payments endpoints (wallet addresses, payments, quotes, grants)
-- ✅ **Modern Java 25** - Records, virtual threads, pattern matching, and latest language features
-- ✅ **Type-Safe & Immutable** - Compile-time safety with immutable data models
-- ✅ **Async-First** - Non-blocking operations with `CompletableFuture<T>`
-- ✅ **Fluent API** - Builder pattern for easy configuration
-- ✅ **GNAP Authorization** - Full Grant Negotiation and Authorization Protocol support
-- ✅ **Well-Documented** - Comprehensive JavaDoc and usage guides
+- **Complete API Coverage** - All Open Payments endpoints (wallet addresses, payments, quotes, grants)
+- **Modern Java 25** - Records, virtual threads, pattern matching, and latest language features
+- **Type-Safe & Immutable** - Compile-time safety with immutable data models
+- **Async-First** - Non-blocking operations with `CompletableFuture<T>`
+- **Fluent API** - Builder pattern for easy configuration
+- **GNAP Authorization** - Full Grant Negotiation and Authorization Protocol support
+- **Well-Documented** - Comprehensive JavaDoc and usage guides
 
 ## Quick Start
 
