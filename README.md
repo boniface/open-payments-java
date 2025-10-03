@@ -8,13 +8,13 @@
 [![Release](https://img.shields.io/badge/Release-0.1.0--SNAPSHOT-blue.svg)]()
 [![Snapshot](https://img.shields.io/badge/Snapshot-available-blue.svg)]()
 [![JavaDoc](https://img.shields.io/badge/JavaDoc-latest-blue.svg)]()
-[![Issues](https://img.shields.io/github/issues/yourusername/open-payments-java.svg)](https://github.com/yourusername/open-payments-java/issues)
+[![Issues](https://img.shields.io/github/issues/boniface/open-payments-java.svg)](https://github.com/boniface/open-payments-java/issues)
 
 ---
 
 ## 📋 Quick Navigation
 
-**[📖 Overview](#overview)** | **[📊 Project Status](#project-status)** | **[📜 License](#license)** | **[🤝 Contributing](#contributing)** | **[📚 Documentation](docs/)**
+**[Overview](#overview)** | **[ Project Status](#project-status)** | **[ License](#license)** | **[ Contributing](#contributing)** | **[ Documentation](docs/)**
 
 ---
 
@@ -38,33 +38,8 @@ Open Payments **separates payment instructions from actual fund execution** - th
 
 ### How It Works
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                   Your Java Application                     │
-│                  (uses this SDK as client)                  │
-└────────────────────┬────────────────────────────────────────┘
-                     │
-                     │ HTTP Requests (via SDK)
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Open Payments API Servers                      │
-│  ┌──────────────────────┐    ┌──────────────────────────┐  │
-│  │ Authorization Server │    │   Resource Server        │  │
-│  │  (GNAP Protocol)     │    │ (Payments, Quotes, etc.) │  │
-│  └──────────────────────┘    └──────────────────────────┘  │
-│                                                             │
-│         Operated by Account Servicing Entity (ASE)         │
-│         (Bank, Wallet Provider, Payment Processor)         │
-└─────────────────────────────────────────────────────────────┘
-                     │
-                     │ Actual Money Movement
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│           Financial Accounts (Ledgers, Wallets)             │
-└─────────────────────────────────────────────────────────────┘
-```
+![](/docs/payment_arch.png)
+
 
 **This SDK handles**: Communication layer (top box)
 **Open Payments API handles**: Protocol and authorization (middle box)
@@ -74,11 +49,11 @@ Open Payments **separates payment instructions from actual fund execution** - th
 
 This **Java SDK** is a client library that simplifies interaction with the Open Payments API from Java applications. Instead of manually constructing HTTP requests, handling authentication, and parsing responses, this SDK provides:
 
-- ✅ **Type-safe Java methods** for all Open Payments API operations
-- ✅ **Automatic authentication** using HTTP signatures and GNAP tokens
-- ✅ **Request/response serialization** with proper JSON mapping
-- ✅ **Error handling** with meaningful exceptions
-- ✅ **Modern Java patterns** (records, CompletableFuture, builders)
+-  **Type-safe Java methods** for all Open Payments API operations
+-  **Automatic authentication** using HTTP signatures and GNAP tokens
+-  **Request/response serialization** with proper JSON mapping
+-  **Error handling** with meaningful exceptions
+-  **Modern Java patterns** (records, CompletableFuture, builders)
 
 **Important**: This SDK is a **client library**, not a payment processor. It enables your Java application to:
 - Communicate with Open Payments-enabled accounts (ASEs)
@@ -92,34 +67,34 @@ This **Java SDK** is a client library that simplifies interaction with the Open 
 
 When your application uses this SDK to interact with Open Payments APIs, you can build:
 
-- 💸 **Peer-to-Peer Payments** - Enable users to send money between Open Payments-enabled accounts
-- 🛒 **E-commerce Checkout** - Accept payments from any Open Payments wallet
-- 🔄 **Recurring Payments** - Set up subscriptions with Open Payments authorization
-- 🌐 **Web Monetization** - Receive micropayments for content consumption
-- 📄 **Invoicing** - Create payment requests with expiration dates
-- 💳 **Buy Now, Pay Later** - Defer payment execution to a future date
-- 🎯 **Split Payments** - Distribute payments across multiple recipients
+-  **Peer-to-Peer Payments** - Enable users to send money between Open Payments-enabled accounts
+-  **E-commerce Checkout** - Accept payments from any Open Payments wallet
+-  **Recurring Payments** - Set up subscriptions with Open Payments authorization
+-  **Web Monetization** - Receive micropayments for content consumption
+-  **Invoicing** - Create payment requests with expiration dates
+-  **Buy Now, Pay Later** - Defer payment execution to a future date
+-  **Split Payments** - Distribute payments across multiple recipients
 
 **Note**: These features work by making API calls to Open Payments-compliant servers. Your application acts as a client; the payment infrastructure is provided by the ASEs.
 
 ## SDK Features
 
 ### Technical Capabilities
-- ✅ **Modern Java 25** - Leverages records, var, and latest language features
-- ✅ **Type-Safe** - Strongly typed with compile-time safety
-- ✅ **Async-First** - All operations return `CompletableFuture<T>`
-- ✅ **Immutable** - All data models are immutable records
-- ✅ **Fluent API** - Builder pattern for easy configuration
-- ✅ **Thread-Safe** - Safe for concurrent use
-- ✅ **Well-Documented** - Comprehensive JavaDoc and guides
+-  **Modern Java 25** - Leverages records, var, and latest language features
+-  **Type-Safe** - Strongly typed with compile-time safety
+-  **Async-First** - All operations return `CompletableFuture<T>`
+-  **Immutable** - All data models are immutable records
+-  **Fluent API** - Builder pattern for easy configuration
+-  **Thread-Safe** - Safe for concurrent use
+-  **Well-Documented** - Comprehensive JavaDoc and guides
 
 ### Complete API Coverage
-- ✅ **Wallet Address Discovery** - Retrieve account metadata and public keys
-- ✅ **Incoming Payments** - Create and manage payment requests
-- ✅ **Outgoing Payments** - Initiate payments from authorized accounts
-- ✅ **Quotes** - Get exchange rates and fee information
-- ✅ **GNAP Authorization** - Handle grant requests and token management
-- ✅ **HTTP Signatures** - Automatic request signing for authentication
+-  **Wallet Address Discovery** - Retrieve account metadata and public keys
+-  **Incoming Payments** - Create and manage payment requests
+-  **Outgoing Payments** - Initiate payments from authorized accounts
+-  **Quotes** - Get exchange rates and fee information
+-  **GNAP Authorization** - Handle grant requests and token management
+-  **HTTP Signatures** - Automatic request signing for authentication
 
 ## Quick Start
 
@@ -336,7 +311,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed design documentati
 
 This SDK leverages modern Java features for clean, maintainable code:
 
-- **Records** - Immutable data models with 70% less boilerplate
+- **Records** - Immutable data models with less boilerplate
 - **Var** - Local variable type inference
 - **CompletableFuture** - Async operations
 - **Optional** - Null safety
@@ -420,11 +395,11 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 | Milestone | Target | Status |
 |-----------|--------|--------|
-| API Design & Documentation | Q1 2025 | ✅ Complete |
-| Core Implementation | Q2 2025 | 🚧 In Progress |
-| Integration Tests | Q2 2025 | 📋 Planned |
-| Beta Release (0.9.0) | Q3 2025 | 📋 Planned |
-| Stable Release (1.0.0) | Q4 2025 | 📋 Planned |
+| API Design & Documentation | M1     | ✅ Complete |
+| Core Implementation | M2     | 🚧 In Progress |
+| Integration Tests | M3     | 📋 Planned |
+| Beta Release (0.9.0) | M4     | 📋 Planned |
+| Stable Release (1.0.0) | M5     | 📋 Planned |
 
 ### Build Status
 
@@ -500,7 +475,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/open-payments-java.git
+   git clone https://github.com/boniface/open-payments-java.git
    cd open-payments-java
    ```
 3. **Create a feature branch**:
@@ -570,8 +545,8 @@ All contributions require review:
 
 ### Need Help?
 
-- **Questions**: Open a [GitHub Discussion](https://github.com/yourusername/open-payments-java/discussions)
-- **Bug Reports**: Open an [Issue](https://github.com/yourusername/open-payments-java/issues) with reproduction steps
+- **Questions**: Open a [GitHub Discussion](https://github.com/boniface/open-payments-java/discussions)
+- **Bug Reports**: Open an [Issue](https://github.com/boniface/open-payments-java/issues) with reproduction steps
 - **Feature Requests**: Open an Issue to discuss before implementing
 
 ### Complete Contributing Guide
@@ -585,8 +560,8 @@ For detailed guidelines, see **[CONTRIBUTING.md](CONTRIBUTING.md)**
 ## Support
 
 - **Documentation**: [https://openpayments.dev](https://openpayments.dev)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/open-payments-java/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/open-payments-java/discussions)
+- **Issues**: [GitHub Issues](https://github.com/boniface/open-payments-java/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/boniface/open-payments-java/discussions)
 
 ## Acknowledgments
 

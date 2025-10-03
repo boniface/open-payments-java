@@ -107,7 +107,6 @@ test: add integration tests for grant flow
    - Description of changes
    - Related issue numbers
    - Testing performed
-   - Screenshots (if UI changes)
 
 4. Wait for review and address any feedback
 
@@ -323,4 +322,4 @@ Contributors are recognized in:
 
 ---
 
-Thank you for contributing to Open Payments Java SDK! 🚀
+Thank you for contributing to Open Payments Java SDK! We appreciate your time and effort in making this project better.
