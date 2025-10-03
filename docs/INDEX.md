@@ -10,21 +10,22 @@ This index helps you find the right document for your needs. Each document has a
 
 | I want to... | Read this document |
 |--------------|-------------------|
-| Understand **why** design decisions were made | [ADR.md](ADR.md) |
-| Understand **how** the system works at runtime | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| Find **where** code is organized | [SDK_STRUCTURE.md](SDK_STRUCTURE.md) |
-| Learn **what** Java 25 features are used | [JAVA_25_FEATURES.md](JAVA_25_FEATURES.md) |
-| Get started quickly with examples | [QUICK_REFERENCE.md](QUICK_REFERENCE.md) |
-| Verify complete API coverage | [API_COVERAGE.md](API_COVERAGE.md) |
-| Contribute to the project | [CONTRIBUTING.md](../CONTRIBUTING.md) |
-| Set up development environment | [BUILD_SETUP_SUMMARY.md](BUILD_SETUP_SUMMARY.md) |
-| Understand code quality tools | [CODE_QUALITY.md](CODE_QUALITY.md) |
+| Understand **why** design decisions were made | [Architecture Decision Records](ADR.md) |
+| Understand **how** the system works at runtime | [Architecture Guide](ARCHITECTURE.md) |
+| Find **where** code is organized | [SDK Structure & Package Organization](SDK_STRUCTURE.md) |
+| Learn **what** Java 25 features are used | [Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md) |
+| Get started quickly with examples | [Quick Reference & Usage Examples](QUICK_REFERENCE.md) |
+| Verify complete API coverage | [API Coverage & Endpoint Mapping](API_COVERAGE.md) |
+| Contribute to the project | [Contributing Guidelines](../CONTRIBUTING.md) |
+| Set up development environment | [Development Setup Guide](SETUP.md) |
+| Understand code quality tools | [Code Quality Standards & Tooling](CODE_QUALITY.md) |
+| View CI/CD configuration | [GitHub Actions Setup](GITHUB_ACTIONS_SETUP.md) |
 
 ---
 
 ## Document Purposes
 
-### [ADR.md](ADR.md) - Architecture Decision Records
+### [Architecture Decision Records](ADR.md)
 **Answers**: "Why did we choose X over Y?"
 
 **Contents**:
@@ -52,7 +53,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [ARCHITECTURE.md](ARCHITECTURE.md) - Runtime Architecture
+### [Architecture Guide](ARCHITECTURE.md)
 **Answers**: "How does the system work at runtime?"
 
 **Contents**:
@@ -74,7 +75,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [SDK_STRUCTURE.md](SDK_STRUCTURE.md) - Package Organization
+### [SDK Structure & Package Organization](SDK_STRUCTURE.md)
 **Answers**: "Where is the code for X?"
 
 **Contents**:
@@ -95,7 +96,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [JAVA_25_FEATURES.md](JAVA_25_FEATURES.md) - Modern Java Usage
+### [Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md)
 **Answers**: "How do we use Java 25 features?"
 
 **Contents**:
@@ -120,7 +121,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Usage Examples
+### [Quick Reference & Usage Examples](QUICK_REFERENCE.md)
 **Answers**: "How do I do X with the SDK?"
 
 **Contents**:
@@ -141,7 +142,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [API_COVERAGE.md](API_COVERAGE.md) - API Mapping
+### [API Coverage & Endpoint Mapping](API_COVERAGE.md)
 **Answers**: "Does the SDK support X operation?"
 
 **Contents**:
@@ -163,7 +164,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [CODE_QUALITY.md](CODE_QUALITY.md) - Standards & Tooling
+### [Code Quality Standards & Tooling](CODE_QUALITY.md)
 **Answers**: "What quality tools are configured?"
 
 **Contents**:
@@ -177,7 +178,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [BUILD_SETUP_SUMMARY.md](BUILD_SETUP_SUMMARY.md) - Development Setup
+### [Development Setup Guide](SETUP.md)
 **Answers**: "How do I set up the development environment?"
 
 **Contents**:
@@ -191,7 +192,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution Guide
+### [Contributing Guidelines](../CONTRIBUTING.md)
 **Answers**: "How do I contribute?"
 
 **Contents**:
@@ -202,6 +203,20 @@ This index helps you find the right document for your needs. Each document has a
 - Testing guidelines
 
 **Use this when**: Contributing code or documentation
+
+---
+
+### [GitHub Actions Setup](GITHUB_ACTIONS_SETUP.md)
+**Answers**: "How is CI/CD configured?"
+
+**Contents**:
+- GitHub Actions workflow configuration
+- Automated build and test pipelines
+- Code quality checks integration
+- Deployment automation
+- CI/CD best practices
+
+**Use this when**: Understanding or modifying CI/CD workflows
 
 ---
 
@@ -221,13 +236,13 @@ This index helps you find the right document for your needs. Each document has a
 
 ## Reading Order for New Contributors
 
-1. **[README.md](../README.md)** - Project overview and quick start
-2. **[SDK_STRUCTURE.md](SDK_STRUCTURE.md)** - Understand code organization
-3. **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - See SDK in action
-4. **[ARCHITECTURE.md](ARCHITECTURE.md)** - Understand runtime behavior
-5. **[ADR.md](ADR.md)** - Learn why decisions were made
-6. **[JAVA_25_FEATURES.md](JAVA_25_FEATURES.md)** - Learn coding patterns
-7. **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Start contributing
+1. **[Project Overview & Quick Start](../README.md)** - Start here
+2. **[SDK Structure & Package Organization](SDK_STRUCTURE.md)** - Understand code organization
+3. **[Quick Reference & Usage Examples](QUICK_REFERENCE.md)** - See SDK in action
+4. **[Architecture Guide](ARCHITECTURE.md)** - Understand runtime behavior
+5. **[Architecture Decision Records](ADR.md)** - Learn why decisions were made
+6. **[Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md)** - Learn coding patterns
+7. **[Contributing Guidelines](../CONTRIBUTING.md)** - Start contributing
 
 ## Document Ownership
 
@@ -242,6 +257,6 @@ Each document answers a specific question type:
 
 ---
 
-**Last Updated**: 2025-10-02
-**Document Count**: 9 markdown files
+**Last Updated**: 2025-10-03
+**Document Count**: 10 markdown files
 **Total Overlap**: Minimal (cross-references only)
