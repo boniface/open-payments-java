@@ -3,8 +3,13 @@ plugins {
     `maven-publish`
     signing
     checkstyle
+    jacoco
     id("com.diffplug.spotless")
     id("io.github.gradle-nexus.publish-plugin")
+    id("org.owasp.dependencycheck") version "10.0.4"
+    id("com.github.spotbugs") version "6.0.26"
+    id("pmd")
+    id("org.sonarqube") version "5.1.0.4882"
 }
 
 group = "zm.hashcode"
@@ -211,6 +216,126 @@ checkstyle {
 tasks.withType<Checkstyle>().configureEach {
     // Don't depend on classes - Checkstyle only needs source files
     classpath = files()
+}
+
+// JaCoCo Configuration - Code Coverage
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test, tasks.named("integrationTest"))
+
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "**/package-info.class",
+                        "**/module-info.class",
+                    )
+                }
+            },
+        ),
+    )
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.jacocoTestReport)
+
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.80".toBigDecimal() // 80% coverage required
+            }
+        }
+
+        rule {
+            element = "CLASS"
+            limit {
+                minimum = "0.70".toBigDecimal() // 70% per class
+            }
+            excludes =
+                listOf(
+                    "*.package-info",
+                    "*.module-info",
+                )
+        }
+    }
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+// SpotBugs Configuration - Static Analysis
+spotbugs {
+    toolVersion = "4.8.6"
+    effort = com.github.spotbugs.snom.Effort.MAX
+    reportLevel = com.github.spotbugs.snom.Confidence.LOW
+    ignoreFailures = false
+}
+
+tasks.withType<com.github.spotbugs.snom.SpotBugsTask>().configureEach {
+    reports {
+        create("html") {
+            required = true
+            outputLocation = file("${project.layout.buildDirectory.get()}/reports/spotbugs/${name}.html")
+        }
+        create("xml") {
+            required = true
+            outputLocation = file("${project.layout.buildDirectory.get()}/reports/spotbugs/${name}.xml")
+        }
+    }
+}
+
+// PMD Configuration - Source Code Analysis
+pmd {
+    toolVersion = "7.7.0"
+    isConsoleOutput = true
+    ruleSetFiles = files("${project.rootDir}/config/pmd/ruleset.xml")
+    ruleSets = emptyList() // Use custom ruleset
+    isIgnoreFailures = false
+}
+
+tasks.withType<Pmd>().configureEach {
+    reports {
+        html.required = true
+        xml.required = true
+    }
+}
+
+// OWASP Dependency Check - Security Vulnerabilities
+dependencyCheck {
+    autoUpdate = true
+    format = "HTML"
+    suppressionFile = "${project.rootDir}/config/dependency-check/suppressions.xml"
+    failBuildOnCVSS = 7.0f
+    analyzers.assemblyEnabled = false
+}
+
+// SonarQube Configuration
+sonar {
+    properties {
+        property("sonar.projectKey", "yourusername_open-payments-java")
+        property("sonar.organization", "yourusername")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.java.binaries", "${layout.buildDirectory.get()}/classes/java/main")
+        property("sonar.java.libraries", configurations.compileClasspath.get().files.joinToString(","))
+        property("sonar.java.test.binaries", "${layout.buildDirectory.get()}/classes/java/test")
+        property("sonar.java.test.libraries", configurations.testCompileClasspath.get().files.joinToString(","))
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.coverage.exclusions", "**/package-info.java,**/module-info.java")
+        property("sonar.exclusions", "**/generated/**")
+    }
 }
 
 publishing {

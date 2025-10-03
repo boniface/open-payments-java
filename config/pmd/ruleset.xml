@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Custom Rules"
+<ruleset name="Open Payments Java PMD Ruleset"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
@@ -8,28 +8,29 @@
 
     <!-- Best Practices -->
     <rule ref="category/java/bestpractices.xml">
-        <exclude name="GuardLogStatement"/>
+        <exclude name="JUnitTestsShouldIncludeAssert"/>
+        <exclude name="JUnitTestContainsTooManyAsserts"/>
     </rule>
 
     <!-- Code Style -->
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor"/>
         <exclude name="OnlyOneReturn"/>
-        <exclude name="CallSuperInConstructor"/>
-        <exclude name="CommentDefaultAccessModifier"/>
-        <exclude name="LongVariable"/>
         <exclude name="ShortVariable"/>
+        <exclude name="LongVariable"/>
         <exclude name="ShortClassName"/>
         <exclude name="ShortMethodName"/>
-        <exclude name="LocalVariableCouldBeFinal"/>
         <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="CallSuperInConstructor"/>
     </rule>
 
     <!-- Design -->
     <rule ref="category/java/design.xml">
         <exclude name="LawOfDemeter"/>
         <exclude name="LoosePackageCoupling"/>
-        <exclude name="UseUtilityClass"/>
+        <exclude name="DataClass"/>
     </rule>
 
     <!-- Documentation -->
@@ -40,7 +41,8 @@
 
     <!-- Error Prone -->
     <rule ref="category/java/errorprone.xml">
-        <exclude name="NullAssignment"/>
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="DataflowAnomalyAnalysis"/>
     </rule>
 
     <!-- Multithreading -->
@@ -51,5 +53,4 @@
 
     <!-- Security -->
     <rule ref="category/java/security.xml"/>
-
 </ruleset>

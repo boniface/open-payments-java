@@ -41,3 +41,19 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Coverage and Reports ###
+*.log
+*.html
+*.xml
+.jacoco/
+dependency-check-data/
+
+### Secrets ###
+secrets.properties
+local.properties
+
+### Signing Keys ###
+*.gpg
+*.asc
+secring.*

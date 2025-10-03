@@ -1,10 +1,27 @@
 # Open Payments Java SDK
 
+[![Project Stage](https://img.shields.io/badge/Project%20Stage-Development-yellow.svg)]()
 [![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.java.net/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![CI](https://img.shields.io/badge/CI-passing-brightgreen.svg)]()
+[![Test Coverage](https://img.shields.io/badge/Coverage-0%25-red.svg)]()
+[![Release](https://img.shields.io/badge/Release-0.1.0--SNAPSHOT-blue.svg)]()
+[![Snapshot](https://img.shields.io/badge/Snapshot-available-blue.svg)]()
+[![JavaDoc](https://img.shields.io/badge/JavaDoc-latest-blue.svg)]()
+[![Issues](https://img.shields.io/github/issues/yourusername/open-payments-java.svg)](https://github.com/yourusername/open-payments-java/issues)
 
-## What is Open Payments?
+---
+
+## 📋 Quick Navigation
+
+**[📖 Overview](#overview)** | **[📊 Project Status](#project-status)** | **[📜 License](#license)** | **[🤝 Contributing](#contributing)** | **[📚 Documentation](docs/)**
+
+---
+
+<a name="overview"></a>
+## 📖 Overview
+
+### What is Open Payments?
 
 **[Open Payments](https://openpayments.dev)** is an open, RESTful API standard that enables applications to interact with financial accounts across different providers (banks, digital wallets, mobile money providers) in a standardized way. It allows developers to add payment functionality to their applications **without becoming licensed financial operators** or building custom integrations for each financial institution.
 
@@ -358,13 +375,212 @@ cd open-payments-java
 - **[Code Quality](docs/CODE_QUALITY.md)** - Standards and tooling
 - **[Setup Guide](docs/BUILD_SETUP_SUMMARY.md)** - Development environment
 
-## Contributing
+---
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+<a name="project-status"></a>
+## 📊 Project Status
 
-## License
+**[⬆️ Back to Top](#-quick-navigation)**
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+### Current Stage: Development (Pre-Release)
+
+This SDK is currently under active development. While the core API structure is defined, implementations are not yet complete.
+
+#### ✅ Completed
+- High-level API interfaces and structure
+- Java 25 record-based data models
+- Complete Open Payments API coverage design
+- Test stub framework (198+ test stubs)
+- Documentation and architecture decisions
+- Build tooling (Gradle, Checkstyle, Spotless)
+
+#### 🚧 In Progress
+- Service implementations
+- HTTP client integration
+- GNAP authorization flow implementation
+- HTTP signature authentication
+- Integration tests
+
+#### 📋 Planned
+- Complete unit test implementations
+- Live API integration testing
+- Performance optimization
+- Maven Central publication
+- JavaDoc hosting
+- Version 1.0 release
+
+### Versioning
+
+This project follows [Semantic Versioning](https://semver.org/):
+- **Current Version**: 0.1.0-SNAPSHOT
+- **Target Stable Release**: 1.0.0
+- **Java Compatibility**: Java 25+
+
+### Roadmap
+
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| API Design & Documentation | Q1 2025 | ✅ Complete |
+| Core Implementation | Q2 2025 | 🚧 In Progress |
+| Integration Tests | Q2 2025 | 📋 Planned |
+| Beta Release (0.9.0) | Q3 2025 | 📋 Planned |
+| Stable Release (1.0.0) | Q4 2025 | 📋 Planned |
+
+### Build Status
+
+```bash
+# Build the project
+./gradlew build
+
+# Run unit tests
+./gradlew test
+
+# Run integration tests
+./gradlew integrationTest
+
+# Run all tests
+./gradlew allTests
+```
+
+**[⬆️ Back to Top](#-quick-navigation)**
+
+---
+
+<a name="license"></a>
+## 📜 License
+
+**[⬆️ Back to Top](#-quick-navigation)**
+
+### Apache License 2.0
+
+Copyright 2025 Open Payments Java SDK Contributors
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+
+**Key Points:**
+- ✅ **Commercial Use** - Use freely in commercial projects
+- ✅ **Modification** - Modify and distribute modified versions
+- ✅ **Distribution** - Distribute original or modified versions
+- ✅ **Patent Grant** - Express patent license included
+- ⚠️ **Trademark** - No permission to use trademarks
+- ⚠️ **Liability** - No warranty provided
+- ⚠️ **Attribution** - Must include license and copyright notice
+
+#### You are free to:
+- Use the software for any purpose
+- Change the software to suit your needs
+- Share the software with anyone
+- Share changes you make to the software
+
+#### Under the following terms:
+- **License and Copyright Notice**: Include a copy of the license and copyright notice with the software
+- **State Changes**: If you modify the software, you must document your changes
+- **No Trademark Use**: You cannot use the project's trademarks without permission
+- **No Warranty**: The software is provided "as is" without warranties
+
+#### Full License Text
+
+For the complete license text, see [LICENSE](LICENSE) file.
+
+**Apache 2.0** is one of the most permissive open-source licenses and is approved by the Open Source Initiative (OSI). It's compatible with GPL v3 and commonly used for Java projects.
+
+**[⬆️ Back to Top](#-quick-navigation)**
+
+---
+
+<a name="contributing"></a>
+## 🤝 Contributing
+
+**[⬆️ Back to Top](#-quick-navigation)**
+
+We welcome contributions from the community! Whether you're fixing bugs, adding features, improving documentation, or reporting issues, your help is appreciated.
+
+### Quick Start for Contributors
+
+1. **Fork the repository** on GitHub
+2. **Clone your fork** locally:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/open-payments-java.git
+   cd open-payments-java
+   ```
+3. **Create a feature branch**:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+4. **Make your changes** following our code style
+5. **Run tests**:
+   ```bash
+   ./gradlew test
+   ```
+6. **Format code**:
+   ```bash
+   ./gradlew spotlessApply
+   ```
+7. **Commit with conventional commit messages**:
+   ```bash
+   git commit -m "feat: add new feature"
+   ```
+8. **Push and open a Pull Request**
+
+### Commit Message Convention
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style (formatting, etc.)
+- `refactor:` - Code refactoring
+- `test:` - Adding/updating tests
+- `chore:` - Maintenance tasks
+
+### Code Style
+
+- **Indentation**: 4 spaces (no tabs)
+- **Line length**: 120 characters max
+- **Braces**: Required for all control structures
+- **Use Java 25 features**: Records, var, CompletableFuture, Optional
+- **Documentation**: All public APIs must have JavaDoc
+
+### Good First Issues
+
+Look for issues labeled `good-first-issue` - these are great for new contributors:
+- Documentation improvements
+- Simple bug fixes
+- Adding test coverage
+- Code cleanup
+
+### Development Guidelines
+
+- ✅ Write tests for all new functionality
+- ✅ Maintain or improve code coverage
+- ✅ Update documentation when changing APIs
+- ✅ Follow existing code patterns
+- ✅ Keep commits focused and atomic
+- ❌ Don't add unnecessary dependencies
+- ❌ Don't break backwards compatibility without discussion
+
+### Code Review Process
+
+All contributions require review:
+1. **Automated checks** must pass (build, tests, formatting)
+2. **At least one approving review** from maintainers
+3. **Documentation** must be updated
+4. **No breaking changes** without major version bump
+
+### Need Help?
+
+- **Questions**: Open a [GitHub Discussion](https://github.com/yourusername/open-payments-java/discussions)
+- **Bug Reports**: Open an [Issue](https://github.com/yourusername/open-payments-java/issues) with reproduction steps
+- **Feature Requests**: Open an Issue to discuss before implementing
+
+### Complete Contributing Guide
+
+For detailed guidelines, see **[CONTRIBUTING.md](CONTRIBUTING.md)**
+
+**[⬆️ Back to Top](#-quick-navigation)**
+
+---
 
 ## Support
 
