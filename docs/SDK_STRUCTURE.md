@@ -92,7 +92,7 @@ client/         (depends on: all packages)
 
 ## Detailed Package Contents
 
-### 📦 client/ (2 files)
+### client/ (2 files)
 **Purpose**: Main SDK entry point and configuration
 
 | File | Type | Purpose |
@@ -107,7 +107,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 auth/ (5 files)
+### auth/ (5 files)
 **Purpose**: GNAP authorization protocol implementation
 
 | File | Type | Purpose |
@@ -126,7 +126,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 wallet/ (4 files)
+### wallet/ (4 files)
 **Purpose**: Wallet address discovery and public key retrieval
 
 | File | Type | Purpose |
@@ -142,7 +142,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 payment/incoming/ (3 files)
+### payment/incoming/ (3 files)
 **Purpose**: Receiving payments
 
 | File | Type | Purpose |
@@ -159,7 +159,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 payment/outgoing/ (3 files)
+### payment/outgoing/ (3 files)
 **Purpose**: Sending payments
 
 | File | Type | Purpose |
@@ -175,7 +175,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 payment/quote/ (3 files)
+### payment/quote/ (3 files)
 **Purpose**: Payment quotes (exchange rates, fees)
 
 | File | Type | Purpose |
@@ -190,7 +190,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 model/ (3 files)
+### model/ (3 files)
 **Purpose**: Shared data models
 
 | File | Type | Purpose |
@@ -203,7 +203,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 http/ (6 files)
+### http/ (6 files)
 **Purpose**: HTTP abstraction layer
 
 | File | Type | Purpose |
@@ -219,7 +219,7 @@ client/         (depends on: all packages)
 
 ---
 
-### 📦 util/ (3 files)
+### util/ (3 files)
 **Purpose**: Cross-cutting utilities
 
 | File | Type | Purpose |

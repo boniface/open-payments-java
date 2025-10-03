@@ -24,7 +24,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ## Document Purposes
 
-### 📋 [ADR.md](ADR.md) - Architecture Decision Records
+### [ADR.md](ADR.md) - Architecture Decision Records
 **Answers**: "Why did we choose X over Y?"
 
 **Contents**:
@@ -52,7 +52,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### 🏗️ [ARCHITECTURE.md](ARCHITECTURE.md) - Runtime Architecture
+### [ARCHITECTURE.md](ARCHITECTURE.md) - Runtime Architecture
 **Answers**: "How does the system work at runtime?"
 
 **Contents**:
@@ -74,7 +74,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### 📦 [SDK_STRUCTURE.md](SDK_STRUCTURE.md) - Package Organization
+### [SDK_STRUCTURE.md](SDK_STRUCTURE.md) - Package Organization
 **Answers**: "Where is the code for X?"
 
 **Contents**:
@@ -95,7 +95,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### ☕ [JAVA_25_FEATURES.md](JAVA_25_FEATURES.md) - Modern Java Usage
+### [JAVA_25_FEATURES.md](JAVA_25_FEATURES.md) - Modern Java Usage
 **Answers**: "How do we use Java 25 features?"
 
 **Contents**:
@@ -120,7 +120,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### 🚀 [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Usage Examples
+### [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Usage Examples
 **Answers**: "How do I do X with the SDK?"
 
 **Contents**:
@@ -141,7 +141,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### ✅ [API_COVERAGE.md](API_COVERAGE.md) - API Mapping
+### [API_COVERAGE.md](API_COVERAGE.md) - API Mapping
 **Answers**: "Does the SDK support X operation?"
 
 **Contents**:
@@ -163,7 +163,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### 🧪 [CODE_QUALITY.md](CODE_QUALITY.md) - Standards & Tooling
+### [CODE_QUALITY.md](CODE_QUALITY.md) - Standards & Tooling
 **Answers**: "What quality tools are configured?"
 
 **Contents**:
@@ -177,7 +177,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### 🛠️ [BUILD_SETUP_SUMMARY.md](BUILD_SETUP_SUMMARY.md) - Development Setup
+### [BUILD_SETUP_SUMMARY.md](BUILD_SETUP_SUMMARY.md) - Development Setup
 **Answers**: "How do I set up the development environment?"
 
 **Contents**:
@@ -191,7 +191,7 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
-### 🤝 [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution Guide
+### [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution Guide
 **Answers**: "How do I contribute?"
 
 **Contents**:

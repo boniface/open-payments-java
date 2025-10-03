@@ -12,7 +12,7 @@ This document records significant architecture and design decisions made during 
 
 ## ADR-001: Java 25 as Minimum Version
 
-**Date**: 2025-10-02
+**Date**: 2025-09-26
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -29,13 +29,13 @@ Set Java 25 as the minimum supported version.
 - **Modern Language Features**: Access to records, sealed classes, pattern matching, and text blocks
 - **Virtual Threads**: Built-in support for lightweight concurrency without additional libraries
 - **No Legacy Burden**: New SDK allows us to adopt latest features without migration concerns
-- **Long-term Viability**: Java's 6-month release cycle means Java 25 will be current throughout initial development
-- **Target Audience**: Financial/payment SDKs typically target enterprises with modern infrastructure
+- **Long-term Viability**: Java's Long LTS support means Java 25 will be current throughout initial development and deployment
+- **Target Audience**: Financial/payment SDKs typically target enterprises with modern infrastructure of which Java is a workhorse
 
 ### Consequences
 
 **Positive**:
-- 70% code reduction using records vs traditional POJOs
+- Significant code reduction using records vs traditional POJOs
 - Cleaner async code with virtual threads support
 - Better type safety with sealed classes and pattern matching
 - Future-proof for upcoming Java features
@@ -57,7 +57,7 @@ Set Java 25 as the minimum supported version.
 
 ## ADR-002: Records for Data Models
 
-**Date**: 2025-10-02
+**Date**: 2025-09-27
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -80,7 +80,7 @@ Use Java records for all immutable data models (Amount, WalletAddress, IncomingP
 ### Consequences
 
 **Positive**:
-- Reduced codebase size by approximately 70% compared to traditional classes
+- Reduced codebase size by a large margin compared to traditional classes
 - Compiler-enforced immutability prevents accidental mutation bugs
 - Consistent equals/hashCode across all models
 - Better debugging with automatic toString()
@@ -103,7 +103,7 @@ Use Java records for all immutable data models (Amount, WalletAddress, IncomingP
 
 ## ADR-003: CompletableFuture for Async Operations
 
-**Date**: 2025-10-02
+**Date**: 2025-09-27
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -146,7 +146,7 @@ All service methods return `CompletableFuture<T>` instead of blocking operations
 
 ## ADR-004: Interface-based Service Layer
 
-**Date**: 2025-10-02
+**Date**: 2025-09-28
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -192,13 +192,13 @@ Define all services as interfaces (WalletAddressService, IncomingPaymentService,
 
 ## ADR-005: Apache HttpClient 5 for HTTP Layer
 
-**Date**: 2025-10-02
+**Date**: 2025-09-28
 **Status**: Accepted
 **Deciders**: Development Team
 
 ### Context
 
-SDK requires robust HTTP client for REST API communication. Must support connection pooling, timeouts, interceptors, and authentication.
+SDK requires solid HTTP client for REST API communication. Must support connection pooling, timeouts, interceptors, and authentication.
 
 ### Decision
 
@@ -240,7 +240,7 @@ Use Apache HttpClient 5 as the underlying HTTP implementation.
 
 ## ADR-006: Builder Pattern for Complex Objects
 
-**Date**: 2025-10-02
+**Date**: 2025-09-29
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -287,7 +287,7 @@ Implement builder pattern for objects with 3+ fields or any optional fields.
 
 ## ADR-007: GNAP for Authorization
 
-**Date**: 2025-10-02
+**Date**: 2025-09-29
 **Status**: Accepted (Specification Requirement)
 **Deciders**: Open Payments Specification
 
@@ -330,7 +330,7 @@ None - this is a specification requirement, not a choice.
 
 ## ADR-008: HTTP Signatures for Authentication
 
-**Date**: 2025-10-02
+**Date**: 2025-09-30
 **Status**: Accepted (Specification Requirement)
 **Deciders**: Open Payments Specification
 
@@ -378,7 +378,7 @@ None - this is a specification requirement. Library choice alternatives:
 
 ## ADR-009: Jackson for JSON Serialization
 
-**Date**: 2025-10-02
+**Date**: 2025-09-30
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -426,7 +426,7 @@ Use Jackson for all JSON operations with centralized ObjectMapper configuration.
 
 ## ADR-010: Checkstyle + Spotless for Code Quality
 
-**Date**: 2025-10-02
+**Date**: 2025-10-01
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -473,7 +473,7 @@ Use Spotless (Eclipse JDT formatter) for automatic formatting and Checkstyle for
 
 ## ADR-011: Apache 2.0 License
 
-**Date**: 2025-10-02
+**Date**: 2025-10-01
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -520,7 +520,7 @@ Release under Apache License 2.0.
 
 ## ADR-012: No Reactive Streams Dependency
 
-**Date**: 2025-10-02
+**Date**: 2025-10-01
 **Status**: Accepted
 **Deciders**: Development Team
 
@@ -669,4 +669,4 @@ These ADRs capture the key architecture decisions shaping the Open Payments Java
 - **Quality**: Automatic formatting and validation in build process
 - **Openness**: Apache 2.0 license for maximum adoption
 
-Each decision prioritizes developer experience, code quality, and long-term maintainability while ensuring full compliance with the Open Payments specification.
+

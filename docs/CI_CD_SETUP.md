@@ -200,9 +200,9 @@ open build/reports/jacoco/test/html/index.html
 Update README badges with actual values once integrated:
 
 ```markdown
-[![CI](https://github.com/yourusername/open-payments-java/workflows/CI/badge.svg)](https://github.com/yourusername/open-payments-java/actions)
-[![codecov](https://codecov.io/gh/yourusername/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/open-payments-java)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=yourusername_open-payments-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=yourusername_open-payments-java)
+[![CI](https://github.com/boniface/open-payments-java/workflows/CI/badge.svg)](https://github.com/boniface/open-payments-java/actions)
+[![codecov](https://codecov.io/gh/yourusername/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/boniface/open-payments-java)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=boniface_open-payments-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=boniface_open-payments-java)
 [![Maven Central](https://img.shields.io/maven-central/v/zm.hashcode/open-payments-java.svg)](https://search.maven.org/artifact/zm.hashcode/open-payments-java)
 ```
 

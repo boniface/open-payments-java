@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 One Command to Rule Them All
+## One Command to Rule Them All
 
 ```bash
 ./gradlew build
@@ -17,7 +17,7 @@ This automatically:
 4. Runs tests
 5. Creates build artifacts
 
-## 📝 Common Commands
+## Common Commands
 
 ```bash
 # Format all code automatically
@@ -36,16 +36,16 @@ This automatically:
 ./gradlew checkstyleMain checkstyleTest
 ```
 
-## 🔧 What Gets Formatted Automatically
+## What Gets Formatted Automatically
 
-- ✅ Import organization
-- ✅ Unused import removal
-- ✅ Indentation (4 spaces)
-- ✅ Trailing whitespace
-- ✅ Brace formatting
-- ✅ File endings
+-  Import organization
+-  Unused import removal
+-  Indentation (4 spaces)
+-  Trailing whitespace
+-  Brace formatting
+-  File endings
 
-## 📊 Quality Standards Enforced
+## Quality Standards Enforced
 
 - **Line length**: 120 characters max
 - **Method length**: 150 lines max
@@ -54,7 +54,7 @@ This automatically:
 - **Naming**: Standard Java conventions
 - **Structure**: No redundant modifiers, proper visibility
 
-## 🔴 When Build Fails
+## When Build Fails
 
 ### "Checkstyle rule violations found"
 - Your code violates style rules
@@ -69,21 +69,21 @@ This automatically:
 - Java syntax errors
 - Check compiler output for details
 
-## 📁 Reports Location
+## Reports Location
 
 After build, check these for detailed information:
 - **Checkstyle**: `build/reports/checkstyle/`
 - **PMD**: `build/reports/pmd/` (when enabled)
 - **SpotBugs**: `build/reports/spotbugs/` (when enabled)
 
-## 💡 Pro Tips
+## Pro Tips
 
 1. **Before committing**: Always run `./gradlew build`
 2. **IDE Integration**: Configure your IDE to use the same Checkstyle rules
 3. **Fast formatting**: `./gradlew spotlessApply` is faster than full build
 4. **CI/CD**: The build fails on violations, perfect for pipelines
 
-## ⚙️ Configuration Files
+## Configuration Files
 
 Want to customize rules? Edit these:
 - `config/checkstyle/checkstyle.xml` - Style rules
@@ -91,7 +91,7 @@ Want to customize rules? Edit these:
 - `config/spotbugs/excludeFilter.xml` - SpotBugs exclusions
 - `build.gradle.kts` - Spotless formatting rules
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 **Cache issues?**
 ```bash

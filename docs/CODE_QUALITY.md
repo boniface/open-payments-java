@@ -8,7 +8,7 @@ This project uses automated code quality tools to enforce best practices, style 
 
 ## Automatic Code Formatting
 
-### Spotless (Active) ✅
+### Spotless (Active) 
 - **Purpose**: Automatically formats code before compilation
 - **Runs**: **Automatically during `build` and `compileJava`**
 - **Features**:
@@ -32,7 +32,7 @@ This project uses automated code quality tools to enforce best practices, style 
 
 ## Static Analysis Tools
 
-### 1. Checkstyle (Active) ✅
+### 1. Checkstyle (Active) 
 - **Version**: 10.20.2
 - **Purpose**: Enforces Java coding standards and style conventions
 - **Runs**: Before compilation (on source files)

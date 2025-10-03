@@ -135,16 +135,16 @@ if (exception instanceof OpenPaymentsException ex) {
 ## Records vs Classes in the SDK
 
 ### Used Records For:
-✅ **Immutable DTOs**: `Amount`, `WalletAddress`, `IncomingPayment`, etc.
-✅ **HTTP Models**: `HttpRequest`, `HttpResponse`
-✅ **Results**: `PaginatedResult<T>`
-✅ **Configuration**: Simple value holders
+ **Immutable DTOs**: `Amount`, `WalletAddress`, `IncomingPayment`, etc.
+ **HTTP Models**: `HttpRequest`, `HttpResponse`
+ **Results**: `PaginatedResult<T>`
+ **Configuration**: Simple value holders
 
 ### Used Classes For:
-✅ **Exceptions**: `OpenPaymentsException` (extends `RuntimeException`)
-✅ **Builders**: Nested static classes in records
-✅ **Utilities**: `JsonMapper`, `UrlBuilder`, `Validators`
-✅ **Interfaces**: All service interfaces
+ **Exceptions**: `OpenPaymentsException` (extends `RuntimeException`)
+ **Builders**: Nested static classes in records
+ **Utilities**: `JsonMapper`, `UrlBuilder`, `Validators`
+ **Interfaces**: All service interfaces
 
 ## Code Reduction Statistics
 
