@@ -129,7 +129,7 @@ We use Eclipse JDT formatter with Checkstyle validation. The configuration is au
 
 Leverage modern Java features where appropriate:
 
-✅ **Use Records** for immutable data models:
+**Use Records** for immutable data models:
 ```java
 public record Amount(String value, String assetCode, int assetScale) {
     public Amount {
@@ -138,25 +138,25 @@ public record Amount(String value, String assetCode, int assetScale) {
 }
 ```
 
-✅ **Use var** for obvious types:
+**Use var** for obvious types:
 ```java
 var client = OpenPaymentsClient.builder().build();
 var amount = Amount.of("100", "USD", 2);
 ```
 
-✅ **Use Optional** for nullable values:
+**Use Optional** for nullable values:
 ```java
 public Optional<String> getMetadata() {
     return Optional.ofNullable(metadata);
 }
 ```
 
-✅ **Use CompletableFuture** for async operations:
+**Use CompletableFuture** for async operations:
 ```java
 CompletableFuture<WalletAddress> get(String url);
 ```
 
-❌ **Avoid** raw types, unnecessary boxing, or outdated patterns
+ **Avoid** raw types, unnecessary boxing, or outdated patterns
 
 ### Documentation
 

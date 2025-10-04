@@ -1,24 +1,24 @@
 # GitHub Actions CI/CD Setup Summary
 
-## ✅ What's Been Configured
+## What's Been Configured
 
-This project now has enterprise-grade CI/CD following Maven Central best practices.
+This project has  CI/CD following Maven Central.
 
-## 🔄 Workflows Created
+## Workflows Created
 
 ### 1. **CI Workflow** (`.github/workflows/ci.yml`)
 Runs on every push and PR to `main`/`develop`
 
 **Quality Checks:**
-- ✅ Code formatting (Spotless)
-- ✅ Code style (Checkstyle)
-- ✅ Build compilation
-- ✅ Unit tests
-- ✅ Integration tests
-- ✅ Code coverage (JaCoCo) - 80% minimum
-- ✅ Dependency security (OWASP)
-- ✅ Static analysis (SpotBugs, PMD)
-- ✅ Code quality (SonarCloud)
+- Code formatting (Spotless)
+- Code style (Checkstyle)
+- Build compilation
+- Unit tests
+- Integration tests
+- Code coverage (JaCoCo) - 80% minimum
+- Dependency security (OWASP)
+- Static analysis (SpotBugs, PMD)
+- Code quality (SonarCloud)
 
 **Build Matrix:**
 - Ubuntu, macOS, Windows
@@ -28,29 +28,29 @@ Runs on every push and PR to `main`/`develop`
 Triggers on version tags (e.g., `v1.0.0`)
 
 **Steps:**
-- ✅ Run all quality checks
-- ✅ Build and sign artifacts (GPG)
-- ✅ Publish to Maven Central (Sonatype OSSRH)
-- ✅ Create GitHub Release
-- ✅ Deploy JavaDoc to GitHub Pages
-- ✅ Verify Maven Central availability
+- Run all quality checks
+- Build and sign artifacts (GPG)
+- Publish to Maven Central (Sonatype OSSRH)
+- Create GitHub Release
+- Deploy JavaDoc to GitHub Pages
+- Verify Maven Central availability
 
 ### 3. **CodeQL Security** (`.github/workflows/codeql.yml`)
 Runs on push, PR, and weekly schedule
 
 **Features:**
-- ✅ Security vulnerability scanning
-- ✅ Code quality analysis
-- ✅ GitHub Security Alerts integration
+- Security vulnerability scanning
+- Code quality analysis
+- GitHub Security Alerts integration
 
-## 🔧 Build Configuration Added
+## Build Configuration Added
 
 ### Plugins
-- ✅ `jacoco` - Code coverage
-- ✅ `spotbugs` - Static analysis
-- ✅ `pmd` - Code quality
-- ✅ `dependencycheck` - Security vulnerabilities
-- ✅ `sonarqube` - Continuous quality monitoring
+- `jacoco` - Code coverage
+- `spotbugs` - Static analysis
+- `pmd` - Code quality
+- `dependencycheck` - Security vulnerabilities
+- `sonarqube` - Continuous quality monitoring
 
 ### Quality Gates
 ```kotlin
@@ -73,7 +73,7 @@ checkstyle {
 }
 ```
 
-## 🔐 Required Secrets (To Be Added)
+## Required Secrets (To Be Added)
 
 Configure these in **GitHub Settings → Secrets and variables → Actions**:
 
@@ -95,7 +95,7 @@ CODECOV_TOKEN         - Token from codecov.io
 SONAR_TOKEN           - Token from sonarcloud.io
 ```
 
-## 📋 Setup Checklist
+## Setup Checklist
 
 ### Before First Release
 
@@ -142,7 +142,7 @@ Replace placeholders with actual values:
 [![Maven Central](https://img.shields.io/maven-central/v/zm.hashcode/open-payments-java.svg)](https://search.maven.org/artifact/zm.hashcode/open-payments-java)
 ```
 
-## 🚀 Release Process
+## Release Process
 
 ### 1. Prepare Release
 ```bash
@@ -175,7 +175,7 @@ git commit -m "chore: prepare for next development iteration"
 git push
 ```
 
-## 🧪 Local Testing
+## Local Testing
 
 Run quality checks locally before pushing:
 
@@ -202,7 +202,7 @@ open build/reports/jacoco/test/html/index.html
 ./gradlew spotbugsMain pmdMain
 ```
 
-## 📊 Quality Metrics
+## Quality Metrics
 
 After setup, you'll have:
 
@@ -216,20 +216,20 @@ After setup, you'll have:
 
 See [docs/CI_CD_SETUP.md](docs/CI_CD_SETUP.md) for detailed documentation.
 
-## 🔍 What Gets Checked on Every PR
+## What Gets Checked on Every PR
 
-1. ✅ Code formatted correctly (Spotless)
-2. ✅ Follows code style (Checkstyle)
-3. ✅ Builds on Ubuntu, macOS, Windows
-4. ✅ All tests pass
-5. ✅ Coverage ≥ 80%
-6. ✅ No high-severity vulnerabilities
-7. ✅ No critical bugs (SpotBugs/PMD)
-8. ✅ Passes SonarCloud quality gate
+1. Code formatted correctly (Spotless)
+2. Follows code style (Checkstyle)
+3. Builds on Ubuntu, macOS, Windows
+4. All tests pass
+5. Coverage ≥ 80%
+6. No high-severity vulnerabilities
+7. No critical bugs (SpotBugs/PMD)
+8. Passes SonarCloud quality gate
 
 **All checks must pass before merge.**
 
-## 🎯 Next Steps
+## Next Steps
 
 1. Add GitHub secrets
 2. Setup external services (Codecov, SonarCloud)
@@ -238,4 +238,4 @@ See [docs/CI_CD_SETUP.md](docs/CI_CD_SETUP.md) for detailed documentation.
 
 ---
 
-**Status**: ✅ CI/CD infrastructure ready | **Next**: Configure secrets
+**Status**: CI/CD infrastructure ready | **Next**: Configure secrets
