@@ -1,4 +1,4 @@
-package zm.hashcode.openpayments.http;
+package zm.hashcode.openpayments.http.core;
 
 import java.util.Map;
 import java.util.Optional;

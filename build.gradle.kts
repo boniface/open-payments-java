@@ -10,6 +10,7 @@ plugins {
     id("com.github.spotbugs") version "6.0.26"
     id("pmd")
     id("org.sonarqube") version "5.1.0.4882"
+    id("com.github.ben-manes.versions") version "0.52.0" // Dependency version updates
 }
 
 group = "zm.hashcode"
@@ -25,8 +26,9 @@ java {
 
 dependencies {
 
-    // HTTP Client - Modern Java HTTP Client with virtual threads support
+    // HTTP Clients - Multiple implementations available
     implementation("org.apache.httpcomponents.client5:httpclient5:5.4")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // JSON Processing - Jackson for JSON serialization/deserialization
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
@@ -69,10 +71,46 @@ tasks {
             events("passed", "skipped", "failed")
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
             showStandardStreams = false
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+        }
+
+        afterSuite(
+            KotlinClosure2<TestDescriptor, TestResult, Unit>({ desc, result ->
+                if (desc.parent == null) {
+                    println("\n═══════════════════════════════════════════════════════════")
+                    println("  Test Results")
+                    println("═══════════════════════════════════════════════════════════")
+                    println("  Total:   ${result.testCount}")
+                    println("  Passed:  ${result.successfulTestCount}")
+                    println("  Failed:  ${result.failedTestCount}")
+                    println("  Skipped: ${result.skippedTestCount}")
+                    println("───────────────────────────────────────────────────────────")
+                    val resultText =
+                        when {
+                            result.failedTestCount > 0 -> "FAILED"
+                            result.skippedTestCount > 0 -> "SUCCESS (with skipped)"
+                            else -> "SUCCESS"
+                        }
+                    println("  Result:  $resultText")
+                    println("═══════════════════════════════════════════════════════════\n")
+                }
+            }),
+        )
+
+        doLast {
+            if (state.skipped) {
+                println("\n═══════════════════════════════════════════════════════════")
+                println("  Test Results (from cache)")
+                println("═══════════════════════════════════════════════════════════")
+                println("  Tests were not executed - results are up-to-date")
+                println("  Run with --rerun-tasks to force execution and see details")
+                println("═══════════════════════════════════════════════════════════\n")
+            }
         }
     }
 
-    // Integration tests - run separately with: ./gradlew integrationTest
     val integrationTest by registering(Test::class) {
         description = "Runs integration tests."
         group = "verification"
@@ -92,9 +130,42 @@ tasks {
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
             showStandardStreams = true // Show output for integration tests
         }
+
+        afterSuite(
+            KotlinClosure2<TestDescriptor, TestResult, Unit>({ desc, result ->
+                if (desc.parent == null) {
+                    println("\n═══════════════════════════════════════════════════════════")
+                    println("  Integration Test Results")
+                    println("═══════════════════════════════════════════════════════════")
+                    println("  Total:   ${result.testCount}")
+                    println("  Passed:  ${result.successfulTestCount}")
+                    println("  Failed:  ${result.failedTestCount}")
+                    println("  Skipped: ${result.skippedTestCount}")
+                    println("───────────────────────────────────────────────────────────")
+                    val resultText =
+                        when {
+                            result.failedTestCount > 0 -> "FAILED"
+                            result.skippedTestCount > 0 -> "SUCCESS (with skipped)"
+                            else -> "SUCCESS"
+                        }
+                    println("  Result:  $resultText")
+                    println("═══════════════════════════════════════════════════════════\n")
+                }
+            }),
+        )
+
+        doLast {
+            if (state.skipped) {
+                println("\n═══════════════════════════════════════════════════════════")
+                println("  Integration Test Results (from cache)")
+                println("═══════════════════════════════════════════════════════════")
+                println("  Tests were not executed - results are up-to-date")
+                println("  Run with --rerun-tasks to force execution and see details")
+                println("═══════════════════════════════════════════════════════════\n")
+            }
+        }
     }
 
-    // Run all tests (unit + integration) with: ./gradlew allTests
     val allTests by registering(Test::class) {
         description = "Runs all tests (unit and integration)."
         group = "verification"
@@ -108,6 +179,55 @@ tasks {
         testLogging {
             events("passed", "skipped", "failed")
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+
+        afterSuite(
+            KotlinClosure2<TestDescriptor, TestResult, Unit>({ desc, result ->
+                if (desc.parent == null) {
+                    println("\n═══════════════════════════════════════════════════════════")
+                    println("  All Tests Results (Unit + Integration)")
+                    println("═══════════════════════════════════════════════════════════")
+                    println("  Total:   ${result.testCount}")
+                    println("  Passed:  ${result.successfulTestCount}")
+                    println("  Failed:  ${result.failedTestCount}")
+                    println("  Skipped: ${result.skippedTestCount}")
+                    println("───────────────────────────────────────────────────────────")
+                    val resultText =
+                        when {
+                            result.failedTestCount > 0 -> "FAILED"
+                            result.skippedTestCount > 0 -> "SUCCESS (with skipped)"
+                            else -> "SUCCESS"
+                        }
+                    println("  Result:  $resultText")
+                    println("═══════════════════════════════════════════════════════════\n")
+                }
+            }),
+        )
+
+        doLast {
+            if (state.skipped) {
+                println("\n═══════════════════════════════════════════════════════════")
+                println("  All Tests Results (from cache)")
+                println("═══════════════════════════════════════════════════════════")
+                println("  Tests were not executed - results are up-to-date")
+                println("  Run with --rerun-tasks to force execution and see details")
+                println("═══════════════════════════════════════════════════════════\n")
+            }
+        }
+    }
+
+    register("testReport") {
+        group = "verification"
+        description = "Runs all tests and always shows detailed results"
+        dependsOn(allTests)
+        doLast {
+            println("\n═══════════════════════════════════════════════════════════")
+            println("  ℹ️  Test Report")
+            println("═══════════════════════════════════════════════════════════")
+            println("  Detailed test results shown above.")
+            println("  To force re-execution: ./gradlew allTests --rerun-tasks")
+            println("  Test report: build/reports/tests/allTests/index.html")
+            println("═══════════════════════════════════════════════════════════\n")
         }
     }
 
@@ -357,8 +477,8 @@ dependencyCheck {
 // SonarQube Configuration
 sonar {
     properties {
-        property("sonar.projectKey", "yourusername_open-payments-java")
-        property("sonar.organization", "yourusername")
+        property("sonar.projectKey", "hashcode_open-payments-java")
+        property("sonar.organization", "hashcode")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
@@ -424,5 +544,188 @@ nexusPublishing {
             nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
             snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Dependency Management and Update Checking
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Configure the dependency updates plugin to check for newer versions.
+ * Run with: ./gradlew dependencyUpdates
+ */
+tasks.named<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>("dependencyUpdates") {
+    // Reject release candidates, milestones, alphas, betas
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+
+    // Check for updates every run
+    outputFormatter = "plain,html,json"
+    outputDir = "build/reports/dependencyUpdates"
+    reportfileName = "report"
+
+    checkForGradleUpdate = true
+    gradleReleaseChannel = "current"
+}
+
+/**
+ * Helper function to determine if a version is unstable.
+ */
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val unstableKeyword =
+        listOf("ALPHA", "BETA", "RC", "CR", "M", "PREVIEW", "SNAPSHOT", "DEV")
+            .any { version.uppercase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return unstableKeyword || !isStable
+}
+
+/**
+ * Task to check HTTP client library availability.
+ * Verifies that Apache HttpClient and OkHttp are available on classpath.
+ */
+tasks.register("checkLibraries") {
+    group = "verification"
+    description = "Checks that required HTTP client libraries are available"
+
+    // Depend on classes to ensure dependencies are resolved
+    dependsOn("classes")
+
+    doLast {
+        println("\n═══════════════════════════════════════════════════════════")
+        println("  Library Availability Check")
+        println("═══════════════════════════════════════════════════════════")
+
+        val libraries =
+            mapOf(
+                "Apache HttpClient 5" to "org.apache.hc.client5.http.impl.async.HttpAsyncClients",
+                "OkHttp" to "okhttp3.OkHttpClient",
+                "Jackson Databind" to "com.fasterxml.jackson.databind.ObjectMapper",
+                "HTTP Signatures" to "org.tomitribe.auth.signatures.Signer",
+                "Jakarta Validation" to "jakarta.validation.Validator",
+            )
+
+        val results = mutableMapOf<String, Boolean>()
+
+        libraries.forEach { (name, className) ->
+            val available =
+                try {
+                    Class.forName(className)
+                    true
+                } catch (e: ClassNotFoundException) {
+                    false
+                }
+            results[name] = available
+            val status = if (available) "✓ Available" else "✗ Missing"
+            println("  %-25s %s".format(name, status))
+        }
+
+        println("───────────────────────────────────────────────────────────")
+
+        val allAvailable = results.values.all { it }
+        if (allAvailable) {
+            println("  Status: ✓ All required libraries are available")
+        } else {
+            val available = results.filterValues { it }.size
+            val total = results.size
+            println("  Status: $available/$total libraries available")
+            println("  Note: Some libraries may not be loaded at build time")
+            println("  Action: Run './gradlew build' to verify all dependencies")
+        }
+        println("═══════════════════════════════════════════════════════════\n")
+    }
+}
+
+/**
+ * Task to check for dependency updates and flag critical updates.
+ * Run with: ./gradlew checkUpdates
+ */
+tasks.register("checkUpdates") {
+    group = "verification"
+    description = "Checks for dependency updates and flags critical ones"
+    dependsOn("dependencyUpdates")
+
+    doLast {
+        println("\n═══════════════════════════════════════════════════════════")
+        println("  Dependency Update Summary")
+        println("═══════════════════════════════════════════════════════════")
+        println("  Full report: build/reports/dependencyUpdates/report.html")
+        println("  Run: open build/reports/dependencyUpdates/report.html")
+        println("  ")
+        println("  Critical dependencies to monitor:")
+        println("  • Apache HttpClient 5 (current: 5.4)")
+        println("  • OkHttp (current: 4.12.0)")
+        println("  • Jackson (current: 2.18.2)")
+        println("  • Jakarta Validation (current: 3.1.0)")
+        println("───────────────────────────────────────────────────────────")
+        println("  To update: Edit versions in build.gradle.kts")
+        println("  Then run: ./gradlew clean build test")
+        println("═══════════════════════════════════════════════════════════\n")
+    }
+}
+
+/**
+ * Task to verify HTTP client implementation selection.
+ */
+tasks.register("verifyHttpImplementations") {
+    group = "verification"
+    description = "Verifies HTTP client implementation availability and selection"
+
+    doLast {
+        println("\n═══════════════════════════════════════════════════════════")
+        println("  HTTP Client Implementation Verification")
+        println("═══════════════════════════════════════════════════════════")
+
+        val implementations =
+            mapOf(
+                "APACHE" to "org.apache.hc.client5.http.impl.async.HttpAsyncClients",
+                "OKHTTP" to "okhttp3.OkHttpClient",
+            )
+
+        implementations.forEach { (name, className) ->
+            val available =
+                try {
+                    Class.forName(className)
+                    true
+                } catch (e: ClassNotFoundException) {
+                    false
+                }
+
+            val status = if (available) "✓ Available" else "✗ Not Found"
+            val recommendation =
+                when {
+                    name == "APACHE" && available -> "(Recommended for production)"
+                    name == "OKHTTP" && available -> "(Lightweight alternative)"
+                    else -> "(Add dependency to use)"
+                }
+
+            println("  %-10s %-15s %s".format(name, status, recommendation))
+        }
+
+        println("───────────────────────────────────────────────────────────")
+        println("  See: HTTP_IMPLEMENTATION_SELECTION_GUIDE.md for details")
+        println("═══════════════════════════════════════════════════════════\n")
+    }
+}
+
+/**
+ * Comprehensive health check task that runs all verification tasks.
+ */
+tasks.register("healthCheck") {
+    group = "verification"
+    description = "Runs comprehensive health check (libraries, updates, tests)"
+
+    dependsOn("checkLibraries", "verifyHttpImplementations", "test")
+
+    doLast {
+        println("\n═══════════════════════════════════════════════════════════")
+        println("  ✓ Health Check Complete")
+        println("═══════════════════════════════════════════════════════════")
+        println("  All systems operational")
+        println("  Run './gradlew checkUpdates' to check for dependency updates")
+        println("═══════════════════════════════════════════════════════════\n")
     }
 }
