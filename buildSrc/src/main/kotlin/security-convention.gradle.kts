@@ -1,8 +1,3 @@
-/**
- * Convention plugin for security scanning.
- * Configures OWASP Dependency Check for vulnerability scanning.
- */
-
 plugins {
     id("org.owasp.dependencycheck")
 }

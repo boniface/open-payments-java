@@ -4,11 +4,6 @@ import org.gradle.api.tasks.testing.TestDescriptor
 import org.gradle.api.tasks.testing.TestResult
 import org.gradle.kotlin.dsl.KotlinClosure2
 
-/**
- * Convention plugin for test configuration.
- * Sets up unit tests, integration tests, and custom test tasks.
- */
-
 plugins {
     java
 }

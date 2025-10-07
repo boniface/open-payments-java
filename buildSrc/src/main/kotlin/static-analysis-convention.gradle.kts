@@ -2,11 +2,6 @@ import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
 
-/**
- * Convention plugin for static analysis tools.
- * Configures SpotBugs and PMD for code analysis.
- */
-
 plugins {
     id("com.github.spotbugs")
     pmd
@@ -16,7 +11,7 @@ plugins {
 // Updated to 4.9.6 - Java 25 support confirmed (class file major version 69)
 // See: https://github.com/spotbugs/spotbugs/releases/tag/4.9.6
 spotbugs {
-    toolVersion = "4.9.6" // Latest version
+    toolVersion = "4.9.6"
     effort = Effort.MAX
     reportLevel = Confidence.LOW
     ignoreFailures = true // Warning mode - doesn't fail build
