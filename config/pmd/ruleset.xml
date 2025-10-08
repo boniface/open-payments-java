@@ -10,6 +10,8 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="JUnitTestsShouldIncludeAssert"/>
         <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <!-- Tests often have duplicate literals for readability -->
+        <exclude name="AvoidDuplicateLiterals"/>
     </rule>
 
     <!-- Code Style -->
@@ -31,6 +33,8 @@
         <exclude name="LawOfDemeter"/>
         <exclude name="LoosePackageCoupling"/>
         <exclude name="DataClass"/>
+        <!-- Test classes can have many test methods -->
+        <exclude name="TooManyMethods"/>
     </rule>
 
     <!-- Documentation -->
@@ -42,6 +46,8 @@
     <!-- Error Prone -->
     <rule ref="category/java/errorprone.xml">
         <exclude name="BeanMembersShouldSerialize"/>
+        <!-- Java records intentionally have fields with same name as accessor methods -->
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
         <!-- DataflowAnomalyAnalysis removed in PMD 7.x -->
     </rule>
 
