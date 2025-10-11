@@ -15,36 +15,32 @@ This document describes the runtime architecture, component interactions, and sy
 ```mermaid
 graph TD
     UserApp[User Application]
-    Client[OpenPaymentsClient<br/>Entry Point]
-    WalletService[Wallet<br/>Service]
-    IncomingService[Incoming<br/>Payment<br/>Service]
-    OutgoingService[Outgoing<br/>Payment<br/>Service]
-    GrantService[Grant<br/>Service]
+    
+    subgraph Client["OpenPaymentsClient (Entry Point)"]
+        WalletService[Wallet<br/>Service]
+        IncomingService[Incoming<br/>Payment<br/>Service]
+        OutgoingService[Outgoing<br/>Payment<br/>Service]
+        GrantService[Grant<br/>Service]
+    end
+    
 
     subgraph HTTPLayer[HTTP Client Layer]
         subgraph Request
+            ApacheHTTP["Apache HttpClient 5 <br/>(Connection Pool)"]
+            RequestInt["Request Interceptors <br/>(Auth, Logging, etc.)"]
 
-            RequestInt[Request Interceptors<br/>Auth, Logging, etc.]
-            ApacheHTTP[Apache HttpClient 5<br/>Connection Pool]
-            RequestInt --> ApacheHTTP
+            ApacheHTTP --> RequestInt
         end
-        ResponseInt[Response Interceptors<br/>Parsing, Validation]
+        ResponseInt["Response Interceptors <br/> (Parsing, Validation)"]
+    end
+    
+    subgraph APIServers[Open Payments API Servers]
+        AuthServer[Authorization<br/>Server<br/>GNAP]
+        ResourceServer[Resource<br/>Server<br/>Payments]
     end
 
-    APIServers[Open Payments API Servers]
-    AuthServer[Authorization<br/>Server<br/>GNAP]
-    ResourceServer[Resource<br/>Server<br/>Payments]
-
     UserApp --> Client
-    Client --> WalletService
-    Client --> IncomingService
-    Client --> OutgoingService
-    Client --> GrantService
-
-    WalletService --> HTTPLayer
-    IncomingService --> HTTPLayer
-    OutgoingService --> HTTPLayer
-    GrantService --> HTTPLayer
+    Client --> HTTPLayer
 
     HTTPLayer <--> APIServers
     APIServers --> AuthServer
