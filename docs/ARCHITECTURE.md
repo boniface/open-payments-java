@@ -25,13 +25,12 @@ graph TD
     
 
     subgraph HTTPLayer[HTTP Client Layer]
-        subgraph Request
-            ApacheHTTP["Apache HttpClient 5 <br/>(Connection Pool)"]
+            direction TB
+            
             RequestInt["Request Interceptors <br/>(Auth, Logging, etc.)"]
-
-            ApacheHTTP --> RequestInt
-        end
-        ResponseInt["Response Interceptors <br/> (Parsing, Validation)"]
+            ApacheHTTP["Apache HttpClient 5 <br/>(Connection Pool)"]
+            ResponseInt["Response Interceptors <br/> (Parsing, Validation)"]
+            RequestInt --> ApacheHTTP --> ResponseInt
     end
     
     subgraph APIServers[Open Payments API Servers]
@@ -42,7 +41,7 @@ graph TD
     UserApp --> Client
     Client --> HTTPLayer
 
-    HTTPLayer <--> APIServers
+    HTTPLayer --> APIServers
     APIServers --> AuthServer
     APIServers --> ResourceServer
 
