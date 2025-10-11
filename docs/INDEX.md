@@ -20,6 +20,7 @@ This index helps you find the right document for your needs. Each document has a
 | Set up development environment | [Development Setup Guide](SETUP.md) |
 | Understand code quality tools | [Code Quality Standards & Tooling](CODE_QUALITY.md) |
 | View CI/CD configuration | [GitHub Actions Setup](GITHUB_ACTIONS_SETUP.md) |
+| Build, test, and maintain the project | [Build Configuration & Developer Guide](BUILD.md) |
 
 ---
 
@@ -170,6 +171,8 @@ This index helps you find the right document for your needs. Each document has a
 **Contents**:
 - Checkstyle configuration
 - Spotless auto-formatting
+- PMD static analysis (v7.17.0, Java 25 compatible)
+- SpotBugs bug detection (v4.9.6, Java 25 compatible)
 - Code style rules
 - Quality metrics
 - Build integration
@@ -220,6 +223,29 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
+### [Build Configuration & Developer Guide](BUILD.md)
+**Answers**: "How do I build, test, and maintain this project?"
+
+**Contents**:
+- Gradle convention plugins structure
+- Common build tasks and commands
+- Code quality tools (PMD, Checkstyle, Spotless, SpotBugs)
+- Dependency management and updates
+- Java 25 support status
+- Troubleshooting guide
+- Performance optimization tips
+
+**Key Information**:
+- Build commands for all scenarios
+- PMD configuration and current violations (62 in main, 217 in test)
+- Dependency update workflow (`./check-updates.sh`)
+- Tool compatibility matrix
+- Configuration file reference
+
+**Use this when**: Building the project, running tests, updating dependencies, or troubleshooting build issues
+
+---
+
 ## Documentation Comparison Matrix
 
 | Topic | ADR | ARCHITECTURE | SDK_STRUCTURE | JAVA_25_FEATURES |
@@ -237,12 +263,13 @@ This index helps you find the right document for your needs. Each document has a
 ## Reading Order for New Contributors
 
 1. **[Project Overview & Quick Start](../README.md)** - Start here
-2. **[SDK Structure & Package Organization](SDK_STRUCTURE.md)** - Understand code organization
-3. **[Quick Reference & Usage Examples](QUICK_REFERENCE.md)** - See SDK in action
-4. **[Architecture Guide](ARCHITECTURE.md)** - Understand runtime behavior
-5. **[Architecture Decision Records](ADR.md)** - Learn why decisions were made
-6. **[Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md)** - Learn coding patterns
-7. **[Contributing Guidelines](../CONTRIBUTING.md)** - Start contributing
+2. **[Build Configuration & Developer Guide](BUILD.md)** - Set up and build the project
+3. **[SDK Structure & Package Organization](SDK_STRUCTURE.md)** - Understand code organization
+4. **[Quick Reference & Usage Examples](QUICK_REFERENCE.md)** - See SDK in action
+5. **[Architecture Guide](ARCHITECTURE.md)** - Understand runtime behavior
+6. **[Architecture Decision Records](ADR.md)** - Learn why decisions were made
+7. **[Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md)** - Learn coding patterns
+8. **[Contributing Guidelines](../CONTRIBUTING.md)** - Start contributing
 
 ## Document Ownership
 
@@ -257,6 +284,6 @@ Each document answers a specific question type:
 
 ---
 
-**Last Updated**: 2025-10-03
-**Document Count**: 10 markdown files
+**Last Updated**: 2025-10-07
+**Document Count**: 11 markdown files
 **Total Overlap**: Minimal (cross-references only)

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import zm.hashcode.openpayments.BaseUnitTest;
+import zm.hashcode.openpayments.http.interceptor.RequestInterceptor;
 
 /**
  * Unit tests for {@link RequestInterceptor}.

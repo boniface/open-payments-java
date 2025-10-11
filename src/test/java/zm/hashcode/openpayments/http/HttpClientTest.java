@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import zm.hashcode.openpayments.BaseUnitTest;
+import zm.hashcode.openpayments.http.core.HttpClient;
 
 /**
  * Unit tests for {@link HttpClient}.

@@ -169,7 +169,12 @@ cd open-payments-java
 
 # Format code
 ./gradlew spotlessApply
+
+# Check for dependency updates
+./check-updates.sh
 ```
+
+> **For complete build documentation**, see [Build Configuration & Developer Guide](docs/BUILD.md)
 
 ## Documentation
 

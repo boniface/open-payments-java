@@ -30,7 +30,7 @@ This project adheres to a code of conduct. By participating, you are expected to
 
 3. Add the upstream repository:
    ```bash
-   git remote add upstream https://github.com/ORIGINAL_OWNER/open-payments-java.git
+   git remote add upstream https://github.com/boniface/open-payments-java.git
    ```
 
 4. Build the project:

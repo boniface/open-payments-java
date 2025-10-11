@@ -73,8 +73,8 @@ This automatically:
 
 After build, check these for detailed information:
 - **Checkstyle**: `build/reports/checkstyle/`
-- **PMD**: `build/reports/pmd/` (when enabled)
-- **SpotBugs**: `build/reports/spotbugs/` (when enabled)
+- **PMD**: `build/reports/pmd/`
+- **SpotBugs**: `build/reports/spotbugs/`
 
 ## Pro Tips
 
