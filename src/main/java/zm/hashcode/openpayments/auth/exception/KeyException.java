@@ -19,6 +19,8 @@ package zm.hashcode.openpayments.auth.exception;
  */
 public class KeyException extends AuthenticationException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructs a new key exception with the specified detail message.
      *

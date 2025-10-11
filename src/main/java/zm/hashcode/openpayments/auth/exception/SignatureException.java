@@ -18,6 +18,8 @@ package zm.hashcode.openpayments.auth.exception;
  */
 public class SignatureException extends AuthenticationException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructs a new signature exception with the specified detail message.
      *

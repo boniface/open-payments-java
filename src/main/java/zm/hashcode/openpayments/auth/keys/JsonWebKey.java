@@ -45,38 +45,32 @@ import zm.hashcode.openpayments.auth.exception.KeyException;
  *
  * <p>
  * <b>Immutability:</b> This record is immutable and thread-safe.
- *
- * @param kid
- *            key identifier - must be unique
- * @param alg
- *            algorithm - must be "EdDSA" for Ed25519
- * @param kty
- *            key type - must be "OKP" for Ed25519
- * @param crv
- *            curve - must be "Ed25519"
- * @param x
- *            base64url-encoded public key value
- * @param use
- *            public key use - typically "sig" for signatures (optional)
- * @see <a href="https://datatracker.ietf.org/doc/html/rfc8037">RFC 8037 - CFRG Elliptic Curve JWK</a>
- * @see <a href="https://openpayments.dev/identity/client-keys/">Open Payments - Client Keys</a>
  */
-@JsonInclude(JsonInclude.Include.NON_ABSENT)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record JsonWebKey(@JsonProperty("kid") String kid, @JsonProperty("alg") String alg,
         @JsonProperty("kty") String kty, @JsonProperty("crv") String crv, @JsonProperty("x") String x,
         @JsonProperty("use") Optional<String> use) {
 
-    /** Standard algorithm for Ed25519 signatures */
-    public static final String ALGORITHM_EDDSA = "EdDSA";
-
-    /** Standard key type for Octet Key Pairs */
+    /** Standard Ed25519 key type */
     public static final String KEY_TYPE_OKP = "OKP";
 
-    /** Standard curve for Ed25519 */
+    /** Standard EdDSA algorithm name */
+    public static final String ALGORITHM_EDDSA = "EdDSA";
+
+    /** Standard Ed25519 curve name */
     public static final String CURVE_ED25519 = "Ed25519";
 
     /** Standard use for signature operations */
     public static final String USE_SIGNATURE = "sig";
+
+    /** Standard Ed25519 key length */
+    private static final int ED25519_KEY_LENGTH = 32;
+
+    /** Standard X.509 encoded Ed25519 key length */
+    private static final int X509_ENCODED_KEY_LENGTH = 44;
+
+    /** ASN.1 header offset for Ed25519 key */
+    private static final int ASN1_HEADER_OFFSET = 12;
 
     /**
      * Compact constructor with validation.
@@ -130,11 +124,11 @@ public record JsonWebKey(@JsonProperty("kid") String kid, @JsonProperty("alg") S
         // For Ed25519, the encoded key includes ASN.1 wrapping
         // The actual 32-byte public key starts at offset 12
         byte[] rawPublicKey;
-        if (publicKeyBytes.length == 44) {
+        if (publicKeyBytes.length == X509_ENCODED_KEY_LENGTH) {
             // Standard Ed25519 public key encoding (12 bytes ASN.1 + 32 bytes key)
-            rawPublicKey = new byte[32];
-            System.arraycopy(publicKeyBytes, 12, rawPublicKey, 0, 32);
-        } else if (publicKeyBytes.length == 32) {
+            rawPublicKey = new byte[ED25519_KEY_LENGTH];
+            System.arraycopy(publicKeyBytes, ASN1_HEADER_OFFSET, rawPublicKey, 0, ED25519_KEY_LENGTH);
+        } else if (publicKeyBytes.length == ED25519_KEY_LENGTH) {
             // Raw public key (already unwrapped)
             rawPublicKey = publicKeyBytes;
         } else {

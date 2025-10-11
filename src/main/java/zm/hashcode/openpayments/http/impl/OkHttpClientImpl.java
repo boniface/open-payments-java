@@ -2,11 +2,11 @@ package zm.hashcode.openpayments.http.impl;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -94,7 +94,9 @@ public final class OkHttpClientImpl implements HttpClient {
     public OkHttpClientImpl(HttpClientConfig config) {
         this.config = Objects.requireNonNull(config, "config must not be null");
         this.okHttpClient = buildOkHttpClient(config);
-        LOGGER.log(Level.INFO, "OkHttp client initialized with base URL: {0}", config.baseUrl());
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.log(Level.INFO, "OkHttp client initialized with base URL: {0}", config.baseUrl());
+        }
     }
 
     private OkHttpClient buildOkHttpClient(HttpClientConfig config) {
@@ -159,7 +161,10 @@ public final class OkHttpClientImpl implements HttpClient {
 
         // Resolve URI against base URL
         URI resolvedUri = resolveUri(processedRequest.uri());
-        LOGGER.log(Level.FINE, "Executing {0} request to {1}", new Object[]{processedRequest.method(), resolvedUri});
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Executing {0} request to {1}",
+                    new Object[]{processedRequest.method(), resolvedUri});
+        }
 
         // Build OkHttp request
         Request okRequest = buildOkHttpRequest(processedRequest, resolvedUri);
@@ -173,7 +178,7 @@ public final class OkHttpClientImpl implements HttpClient {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 // Extract status and headers before try-with-resources to ensure they're available in catch blocks
                 int statusCode = response.code();
-                Map<String, String> headers = new HashMap<>();
+                Map<String, String> headers = new ConcurrentHashMap<>();
                 response.headers().forEach(pair -> headers.put(pair.getFirst(), pair.getSecond()));
 
                 try (response) {
@@ -182,21 +187,28 @@ public final class OkHttpClientImpl implements HttpClient {
                     future.complete(processedResponse);
                 } catch (IOException e) {
                     // Body read failed but we got an HTTP response
-                    LOGGER.log(Level.WARNING, "Failed to read response body from {0}, status: {1}",
-                            new Object[]{call.request().url(), statusCode});
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.log(Level.WARNING, "Failed to read response body from {0}, status: {1}",
+                                new Object[]{call.request().url(), statusCode});
+                    }
 
                     // Create a response with empty body to preserve status code
                     HttpResponse errorResponse = HttpResponse.of(statusCode, headers, "");
                     future.complete(errorResponse);
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Unexpected error processing response from " + call.request().url(), e);
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.log(Level.SEVERE, "Unexpected error processing response from " + call.request().url(),
+                                e);
+                    }
                     future.completeExceptionally(e);
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                LOGGER.log(Level.WARNING, "Request failed: " + resolvedUri, e);
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "Request failed: " + resolvedUri, e);
+                }
                 future.completeExceptionally(e);
             }
         });
@@ -299,19 +311,25 @@ public final class OkHttpClientImpl implements HttpClient {
     public void addRequestInterceptor(RequestInterceptor interceptor) {
         Objects.requireNonNull(interceptor, "interceptor must not be null");
         requestInterceptors.add(interceptor);
-        LOGGER.log(Level.FINE, "Added request interceptor: {0}", interceptor.getClass().getName());
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Added request interceptor: {0}", interceptor.getClass().getName());
+        }
     }
 
     @Override
     public void addResponseInterceptor(ResponseInterceptor interceptor) {
         Objects.requireNonNull(interceptor, "interceptor must not be null");
         responseInterceptors.add(interceptor);
-        LOGGER.log(Level.FINE, "Added response interceptor: {0}", interceptor.getClass().getName());
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Added response interceptor: {0}", interceptor.getClass().getName());
+        }
     }
 
     @Override
     public void close() {
-        LOGGER.log(Level.INFO, "Closing OkHttp client");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.log(Level.INFO, "Closing OkHttp client");
+        }
         okHttpClient.dispatcher().executorService().shutdown();
         okHttpClient.connectionPool().evictAll();
     }

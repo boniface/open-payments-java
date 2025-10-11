@@ -23,6 +23,8 @@ import zm.hashcode.openpayments.model.OpenPaymentsException;
  */
 public class AuthenticationException extends OpenPaymentsException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructs a new authentication exception with the specified detail message.
      *
