@@ -313,7 +313,7 @@ public final class HttpClientFactory {
          */
         public static Environment fromSystemProperty() {
             String env = System.getProperty("app.environment", "development");
-            return switch (env.toLowerCase()) {
+            return switch (env.toLowerCase(java.util.Locale.ROOT)) {
                 case "prod", "production" -> PRODUCTION;
                 case "staging", "stage" -> STAGING;
                 default -> DEVELOPMENT;

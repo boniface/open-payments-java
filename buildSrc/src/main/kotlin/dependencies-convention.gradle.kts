@@ -26,8 +26,8 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:$jacksonVersion")
 
-    // HTTP Signatures - For Open Payments authentication
-    implementation("org.tomitribe:tomitribe-http-signatures:$httpSignaturesVersion")
+    // HTTP Signatures - For Open Payments authentication (RFC 9421)
+    implementation("com.authlete:http-message-signatures:$httpSignaturesVersion")
 
     // Validation
     implementation("jakarta.validation:jakarta.validation-api:$jakartaValidationVersion")

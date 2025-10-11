@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,7 +96,9 @@ public final class ApacheHttpClient implements HttpClient {
         this.config = Objects.requireNonNull(config, "config must not be null");
         this.asyncClient = buildAsyncClient(config);
         this.asyncClient.start();
-        LOGGER.log(Level.INFO, "Apache HttpClient initialized with base URL: {0}", config.baseUrl());
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.log(Level.INFO, "Apache HttpClient initialized with base URL: {0}", config.baseUrl());
+        }
     }
 
     private CloseableHttpAsyncClient buildAsyncClient(HttpClientConfig config) {
@@ -143,7 +145,10 @@ public final class ApacheHttpClient implements HttpClient {
 
         // Resolve URI against base URL
         URI resolvedUri = resolveUri(processedRequest.uri());
-        LOGGER.log(Level.FINE, "Executing {0} request to {1}", new Object[]{processedRequest.method(), resolvedUri});
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Executing {0} request to {1}",
+                    new Object[]{processedRequest.method(), resolvedUri});
+        }
 
         // Build Apache HttpClient request
         SimpleHttpRequest apacheRequest = buildApacheRequest(processedRequest, resolvedUri);
@@ -165,13 +170,17 @@ public final class ApacheHttpClient implements HttpClient {
 
             @Override
             public void failed(Exception ex) {
-                LOGGER.log(Level.WARNING, "Request failed: " + resolvedUri, ex);
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "Request failed: " + resolvedUri, ex);
+                }
                 future.completeExceptionally(ex);
             }
 
             @Override
             public void cancelled() {
-                LOGGER.log(Level.WARNING, "Request cancelled: {0}", resolvedUri);
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.log(Level.WARNING, "Request cancelled: {0}", resolvedUri);
+                }
                 future.cancel(true);
             }
         });
@@ -227,7 +236,7 @@ public final class ApacheHttpClient implements HttpClient {
         int statusCode = apacheResponse.getCode();
 
         // Extract headers
-        Map<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new ConcurrentHashMap<>();
         for (var header : apacheResponse.getHeaders()) {
             headers.put(header.getName(), header.getValue());
         }
@@ -261,19 +270,25 @@ public final class ApacheHttpClient implements HttpClient {
     public void addRequestInterceptor(RequestInterceptor interceptor) {
         Objects.requireNonNull(interceptor, "interceptor must not be null");
         requestInterceptors.add(interceptor);
-        LOGGER.log(Level.FINE, "Added request interceptor: {0}", interceptor.getClass().getName());
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Added request interceptor: {0}", interceptor.getClass().getName());
+        }
     }
 
     @Override
     public void addResponseInterceptor(ResponseInterceptor interceptor) {
         Objects.requireNonNull(interceptor, "interceptor must not be null");
         responseInterceptors.add(interceptor);
-        LOGGER.log(Level.FINE, "Added response interceptor: {0}", interceptor.getClass().getName());
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Added response interceptor: {0}", interceptor.getClass().getName());
+        }
     }
 
     @Override
     public void close() {
-        LOGGER.log(Level.INFO, "Closing Apache HttpClient");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.log(Level.INFO, "Closing Apache HttpClient");
+        }
         asyncClient.close(CloseMode.GRACEFUL);
     }
 }

@@ -283,6 +283,8 @@ public final class ResilientHttpClient implements HttpClient {
      * Exception thrown when circuit breaker is open and rejects requests.
      */
     public static final class CircuitBreakerOpenException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
         public CircuitBreakerOpenException(String message) {
             super(message);
         }
