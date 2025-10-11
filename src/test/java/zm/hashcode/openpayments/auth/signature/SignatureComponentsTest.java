@@ -1,6 +1,7 @@
 package zm.hashcode.openpayments.auth.signature;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Map;
 import java.util.stream.Stream;

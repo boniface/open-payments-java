@@ -35,9 +35,9 @@ class HttpSignatureServiceTest {
 
     // Test helper class to reduce boilerplate
     private static class SignatureTestContext {
-        final ClientKey clientKey;
-        final HttpSignatureService service;
-        final SignatureComponents components;
+        private final ClientKey clientKey;
+        private final HttpSignatureService service;
+        private final SignatureComponents components;
 
         SignatureTestContext(String keyId, SignatureComponents components) {
             this.clientKey = ClientKeyGenerator.generate(keyId);
@@ -51,6 +51,18 @@ class HttpSignatureServiceTest {
 
         boolean validateSignature(SignatureComponents comps, String signatureValue) {
             return service.validateSignature(comps, signatureValue);
+        }
+
+        ClientKey getClientKey() {
+            return clientKey;
+        }
+
+        HttpSignatureService getService() {
+            return service;
+        }
+
+        SignatureComponents getComponents() {
+            return components;
         }
     }
 
@@ -194,7 +206,7 @@ class HttpSignatureServiceTest {
         @Test
         @DisplayName("should throw when components is null")
         void shouldThrowWhenComponentsIsNull() {
-            assertThatThrownBy(() -> context.service.createSignatureHeaders(null))
+            assertThatThrownBy(() -> context.getService().createSignatureHeaders(null))
                     .isInstanceOf(NullPointerException.class).hasMessageContaining("components must not be null");
         }
     }
@@ -218,7 +230,7 @@ class HttpSignatureServiceTest {
             Map<String, String> headers = context.createSignature();
             String signatureValue = extractSignatureValue(headers.get("signature"));
 
-            assertThat(context.validateSignature(context.components, signatureValue)).isTrue();
+            assertThat(context.validateSignature(context.getComponents(), signatureValue)).isTrue();
         }
 
         @Test
@@ -228,7 +240,7 @@ class HttpSignatureServiceTest {
             String signatureValue = extractSignatureValue(headers.get("signature"));
             String tamperedSignature = signatureValue.substring(0, signatureValue.length() - 4) + "AAAA";
 
-            assertThat(context.validateSignature(context.components, tamperedSignature)).isFalse();
+            assertThat(context.validateSignature(context.getComponents(), tamperedSignature)).isFalse();
         }
 
         @Test
@@ -249,9 +261,9 @@ class HttpSignatureServiceTest {
             Map<String, String> headers = context.createSignature();
             String signatureValue = extractSignatureValue(headers.get("signature"));
 
-            var otherContext = new SignatureTestContext("different-key", context.components);
+            var otherContext = new SignatureTestContext("different-key", context.getComponents());
 
-            assertThat(otherContext.validateSignature(context.components, signatureValue)).isFalse();
+            assertThat(otherContext.validateSignature(context.getComponents(), signatureValue)).isFalse();
         }
 
         @Test
@@ -263,8 +275,8 @@ class HttpSignatureServiceTest {
             String sig1 = extractSignatureValue(headers1.get("signature"));
             String sig2 = extractSignatureValue(headers2.get("signature"));
 
-            assertThat(context.validateSignature(context.components, sig1)).isTrue();
-            assertThat(context.validateSignature(context.components, sig2)).isTrue();
+            assertThat(context.validateSignature(context.getComponents(), sig1)).isTrue();
+            assertThat(context.validateSignature(context.getComponents(), sig2)).isTrue();
         }
 
         @ParameterizedTest
@@ -288,21 +300,21 @@ class HttpSignatureServiceTest {
         @Test
         @DisplayName("should throw when validating with null components")
         void shouldThrowWhenValidatingWithNullComponents() {
-            assertThatThrownBy(() -> context.service.validateSignature(null, "signature"))
+            assertThatThrownBy(() -> context.getService().validateSignature(null, "signature"))
                     .isInstanceOf(NullPointerException.class).hasMessageContaining("components must not be null");
         }
 
         @Test
         @DisplayName("should throw when validating with null signature")
         void shouldThrowWhenValidatingWithNullSignature() {
-            assertThatThrownBy(() -> context.service.validateSignature(context.components, null))
+            assertThatThrownBy(() -> context.getService().validateSignature(context.getComponents(), null))
                     .isInstanceOf(NullPointerException.class).hasMessageContaining("signatureValue must not be null");
         }
 
         @Test
         @DisplayName("should throw when signature is not base64")
         void shouldThrowWhenSignatureIsNotBase64() {
-            assertThatThrownBy(() -> context.service.validateSignature(context.components, "not-base64!!!"))
+            assertThatThrownBy(() -> context.getService().validateSignature(context.getComponents(), "not-base64!!!"))
                     .isInstanceOf(SignatureException.class).hasMessageContaining("Invalid signature encoding");
         }
     }
