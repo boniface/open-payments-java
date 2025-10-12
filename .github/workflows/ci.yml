@@ -154,12 +154,12 @@ jobs:
 
       # Clean dependency-check database to avoid corruption
       - name: Clean dependency check database
-        run: ./gradlew cleanDependencyCheckDb --no-daemon
+        run: ./gradlew cleanDependencyCheckDb --no-daemon --no-configuration-cache
         continue-on-error: true
 
       # Run dependency vulnerability check (slowest, runs separately)
       - name: Run dependency vulnerability check
-        run: ./gradlew dependencyCheckAnalyze --no-daemon
+        run: ./gradlew dependencyCheckAnalyze --no-daemon --no-configuration-cache
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
