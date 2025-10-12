@@ -331,7 +331,7 @@ None - this is a specification requirement, not a choice.
 ## ADR-008: HTTP Signatures for Authentication
 
 **Date**: 2025-09-30
-**Status**: Accepted (Specification Requirement)
+**Status**: Accepted (Specification Requirement) - ✅ Implemented
 **Deciders**: Open Payments Specification
 
 ### Context
@@ -340,39 +340,60 @@ Open Payments requires HTTP message signatures for authenticating requests to re
 
 ### Decision
 
-Use Tomitribe HTTP Signatures library for request signing.
+Implement HTTP Signatures (RFC 9421) with Ed25519 signing using custom implementation.
 
 ### Rationale
 
-- **Specification Compliance**: Open Payments mandates HTTP signatures
-- **Proven Implementation**: Tomitribe library implements IETF draft standard
-- **Sign Request Components**: Signs method, URI, headers, and body
-- **Public Key Verification**: Recipients verify signatures using published public keys
+- **Specification Compliance**: Open Payments mandates HTTP signatures (RFC 9421)
+- **Custom Implementation**: Built HttpSignatureService with Ed25519 support
+- **Sign Request Components**: Signs method, URI, content-digest headers
+- **Public Key Verification**: Recipients verify signatures using published JWKs
 - **Tamper Protection**: Prevents request modification in transit
+- **Zero External Dependencies**: No third-party signature libraries needed
 
 ### Consequences
 
 **Positive**:
 - Strong authentication without sending credentials in requests
 - Tamper-proof requests provide message integrity
-- Standards-based approach (IETF draft)
-- Works with GNAP access tokens
+- Standards-based approach (RFC 9421)
+- Works seamlessly with GNAP access tokens
+- No external dependencies for signature generation
+- Full control over signature component selection
 
 **Negative**:
-- Additional dependency (Tomitribe library)
-- Cryptographic key management required
+- Cryptographic key management required (Ed25519 key pairs)
 - Clock skew can cause signature validation failures
+- Must maintain signature implementation as RFC evolves
 
 **Neutral**:
-- Wrapped in RequestInterceptor, transparent to service layer
+- Wrapped in HttpSignatureService, transparent to service layer
+- ContentDigest utility handles SHA-256 body digests
+
+### Implementation Details
+
+**Implemented in Phase 1 & 2** (102 tests):
+
+**Phase 1 - Cryptography**:
+- `ClientKey` - Ed25519 key pair representation
+- `ClientKeyGenerator` - Key generation using Java's KeyPairGenerator ("Ed25519")
+- `ContentDigest` - SHA-256 digest calculation
+- `Base64Encoder` - URL-safe Base64 encoding
+- Uses Java 15+ built-in Ed25519 support (no external crypto libraries)
+
+**Phase 2 - HTTP Signatures**:
+- `HttpSignatureService` - Main service for request signing
+- `SignatureComponents` - Component selection and serialization
+- `SignatureInput` - Signature metadata generation
+- RFC 9421 compliant signature generation
 
 ### Alternatives Considered
 
-None - this is a specification requirement. Library choice alternatives:
+Library choice alternatives:
 
-1. **Custom Implementation**: Reinvent the wheel, high risk of security bugs
-2. **Bouncy Castle**: Low-level crypto library, would need to implement signature logic
-3. **Tomitribe (chosen)**: Purpose-built for HTTP signatures, battle-tested
+1. **Custom Implementation (chosen)**: Full control, no dependencies, leverages Java's built-in Ed25519
+2. **Tomitribe HTTP Signatures**: External dependency, would still need Ed25519 implementation
+3. **Bouncy Castle**: Heavy crypto library (1MB+), unnecessary when Java 15+ has Ed25519 built-in
 
 ---
 
@@ -611,7 +632,75 @@ Organize code by service domain: `wallet/`, `payment/{incoming,outgoing,quote}/`
 
 ---
 
-## ADR-014: Immutability Throughout
+## ADR-014: HTTP Interceptor Pattern
+
+**Date**: 2025-10-10
+**Status**: Accepted - ✅ Implemented
+**Deciders**: Development Team
+
+### Context
+
+HTTP communication requires cross-cutting concerns: logging, authentication, error handling. These shouldn't be scattered throughout service implementations.
+
+### Decision
+
+Implement functional interceptor pattern with RequestInterceptor and ResponseInterceptor interfaces that can be chained on HTTP clients.
+
+### Rationale
+
+- **Separation of Concerns**: Authentication, logging, errors handled independently
+- **Composability**: Multiple interceptors can be chained in sequence
+- **Reusability**: Same interceptor can be used across all services
+- **Transparency**: Service layer doesn't know about interceptors
+- **Functional Interface**: Single abstract method enables lambda-based interceptors
+- **Immutability**: Interceptors return new request/response, don't mutate
+
+### Consequences
+
+**Positive**:
+- Clean separation: services focus on business logic, interceptors handle infrastructure
+- Easy to add new concerns (rate limiting, metrics, caching) without touching services
+- Testability: interceptors tested independently, services tested with mock interceptors
+- Security: sensitive header masking in logging interceptor
+- Flexible ordering: interceptors execute in the order added
+
+**Negative**:
+- Slight performance overhead (each interceptor creates new object)
+- Order matters: incorrect ordering can cause issues (e.g., logging before auth)
+- Debugging: multiple interceptors can make request flow harder to trace
+
+**Neutral**:
+- Each HTTP client instance has its own interceptor chain
+
+### Implementation Details
+
+**Implemented in Phase 5** (79 tests):
+
+1. **Request Interceptors**:
+   - `LoggingRequestInterceptor` - Logs requests with sensitive header masking
+   - `AuthenticationInterceptor` - Adds authentication headers (Bearer, GNAP, Basic, Custom)
+
+2. **Response Interceptors**:
+   - `LoggingResponseInterceptor` - Logs responses with configurable log levels
+   - `ErrorHandlingInterceptor` - Extracts structured error information from JSON
+
+3. **Features**:
+   - Thread-safe with ConcurrentHashMap for sensitive patterns
+   - Configurable log levels and verbosity
+   - Automatic sensitive data masking (Authorization, tokens, keys)
+   - Large body truncation for performance
+   - JSON error parsing with fallback
+
+### Alternatives Considered
+
+1. **Filter Chain Pattern**: More complex, requires managing filter chain state
+2. **Aspect-Oriented Programming (AOP)**: Would require Spring/AspectJ dependency
+3. **Decorator Pattern**: More rigid, harder to compose dynamically
+4. **Inline Logic**: Would scatter concerns across all service implementations
+
+---
+
+## ADR-015: Immutability Throughout
 
 **Date**: 2025-10-02
 **Status**: Accepted
@@ -661,12 +750,35 @@ Make all data models immutable: records with final fields, defensive copying for
 
 These ADRs capture the key architecture decisions shaping the Open Payments Java SDK:
 
-- **Modern Java**: Leveraging Java 25 features for cleaner, safer code
-- **Async-First**: Non-blocking by default with CompletableFuture
+### Core Principles (Phases 1-6 Complete)
+
+- **Modern Java** (ADR-001): Java 25 features for cleaner, safer code
+- **Immutability** (ADR-002, ADR-015): Records and immutable data models throughout
+- **Async-First** (ADR-003): Non-blocking operations with CompletableFuture
 - **Type Safety**: Records, interfaces, and strong typing throughout
-- **Testability**: Interface-based design for easy mocking
-- **Standards**: Following Open Payments specification (GNAP, HTTP signatures)
-- **Quality**: Automatic formatting and validation in build process
-- **Openness**: Apache 2.0 license for maximum adoption
+- **Testability** (ADR-004): Interface-based design for easy mocking
+
+### Implementation Choices (✅ Implemented)
+
+- **HTTP Signatures** (ADR-008): Custom RFC 9421 implementation with Ed25519
+- **GNAP Authorization** (ADR-007): Full GNAP protocol for grant management
+- **HTTP Interceptors** (ADR-014): Functional interceptor pattern for cross-cutting concerns
+- **Apache HttpClient 5** (ADR-005): Production-grade HTTP with virtual thread support
+- **Jackson JSON** (ADR-009): Industry-standard serialization with Java Time support
+
+### Quality & Standards
+
+- **Code Quality** (ADR-010): Spotless + Checkstyle for consistent formatting
+- **No Reactive Streams** (ADR-012): CompletableFuture over heavy dependencies
+- **Service-Oriented Structure** (ADR-013): Domain-driven package organization
+- **Apache 2.0 License** (ADR-011): Maximum adoption with patent protection
+
+### Status Summary
+
+**Total ADRs**: 15
+**Implemented**: 6 (ADR-001 through ADR-006 form foundation, ADR-007/08/14 implemented in Phases 1-6)
+**Accepted**: 9 (ADR-009 through ADR-015, with ADR-014 completed)
+
+All architectural decisions through Phase 6 are complete and validated with 277 passing tests.
 
 

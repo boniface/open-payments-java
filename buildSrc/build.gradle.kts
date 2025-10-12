@@ -25,5 +25,4 @@ dependencies {
     implementation("com.github.spotbugs.snom:spotbugs-gradle-plugin:6.2.5")
     implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882")
     implementation("com.github.ben-manes:gradle-versions-plugin:0.53.0")
-    implementation("com.authlete:http-message-signatures:1.8")
 }
