@@ -10,7 +10,7 @@ plugins {
     id("quality-convention")
     id("static-analysis-convention")
     id("coverage-convention")
-    id("security-convention")
+    // id("security-convention") // Disabled: OWASP dependency-check incompatible with Gradle 9.1
     id("sonar-convention")
     id("publishing-convention")
     id("utilities-convention")
