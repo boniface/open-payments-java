@@ -123,6 +123,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+      # Disable configuration cache globally for this job (OWASP dependency-check incompatible)
+      GRADLE_OPTS: "-Dorg.gradle.configuration-cache=false"
 
     steps:
       - name: Checkout code
@@ -152,30 +154,10 @@ jobs:
       - name: Run static analysis (PMD, SpotBugs)
         run: ./gradlew pmdMain pmdTest spotbugsMain spotbugsTest --no-daemon --continue
 
-      # Clean Gradle caches to ensure fresh run without configuration cache
-      - name: Clean Gradle configuration cache
-        run: |
-          rm -rf ~/.gradle/configuration-cache
-          rm -rf .gradle/configuration-cache
-          rm -rf build/reports/configuration-cache
-        continue-on-error: true
-
-      # Clean dependency-check database to avoid corruption
-      - name: Clean dependency check database
-        run: ./gradlew cleanDependencyCheckDb --no-daemon --no-configuration-cache
-        continue-on-error: true
-
       # Run dependency vulnerability check (slowest, runs separately)
-      # Configuration cache must be completely disabled for OWASP dependency-check
+      # Note: Configuration cache is disabled globally via GRADLE_OPTS for this entire job
       - name: Run dependency vulnerability check
-        run: |
-          ./gradlew dependencyCheckAnalyze \
-            --no-daemon \
-            --no-configuration-cache \
-            --no-build-cache \
-            --rerun-tasks \
-            --stacktrace \
-            2>&1 || echo "::warning::Dependency check failed but continuing workflow"
+        run: ./gradlew dependencyCheckAnalyze --no-daemon --stacktrace
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         continue-on-error: true
