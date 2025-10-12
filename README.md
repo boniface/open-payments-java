@@ -20,12 +20,38 @@ A modern Java 25 SDK for the [Open Payments API](https://openpayments.dev) - ena
 **[Open Payments](https://openpayments.dev)** is an open RESTful API standard that enables applications to interact with financial accounts across different providers in a standardized way. It allows developers to add payment functionality **without becoming licensed financial operators** or building custom integrations for each institution.
 
 **This SDK** is a Java client library that simplifies interaction with Open Payments-enabled accounts (Account Servicing Entities - ASEs). It handles:
+
 - Type-safe API operations for all Open Payments endpoints
 - Automatic authentication (HTTP signatures & GNAP tokens)
 - Request/response serialization with proper JSON mapping
 - Modern async patterns with CompletableFuture
 
-![Payment Architecture](/docs/payment_arch.png)
+```mermaid
+graph TD
+    App["<b>Your Java Application</b> <br/> <small> (Uses this SDK as client)</small>"]
+
+    ASE["<b>Financial Accounts<b/> <br/> <small>(Ledger, Wallet, etc)</small>"]
+
+    subgraph SDK["Open Payments API Servers"]
+    
+        Auth["Authorization Server <br/> (GNAP Protocol)"]
+        Resource["Resource Server Payments <br/> (Payment, Quotes...)"]
+        Auth ~~~ Note
+        Resource ~~~ Note
+        
+        Note["Operated by Account Service Entity (ASE)<br/> (Bank, Wallet Provider, Payment Processor)"]
+    end
+
+    App -->|HTTP Request via SDK| SDK
+    SDK -->|Actual money movement| ASE
+
+    style App fill:#e1f5ff,color:#000
+    style SDK fill:#fff4e1,color:#000
+    style Auth fill:#ffe8e1,color:#000
+    style ASE fill:#e8f5e9,color:#000
+    style Resource fill:#ffe8e1,color:#000
+    style Note fill:#fff4e1,stroke:#fff4e1,stroke-width:2px,color:#000
+```
 
 **Important**: This SDK is a client library for communicating with Open Payments APIs. The actual payment processing is performed by the ASEs (banks, wallets) that implement the specification.
 
@@ -49,6 +75,7 @@ A modern Java 25 SDK for the [Open Payments API](https://openpayments.dev) - ena
 ### Installation
 
 **Gradle (Kotlin DSL)**:
+
 ```kotlin
 dependencies {
     implementation("zm.hashcode:open-payments-java:1.0-SNAPSHOT")
@@ -56,6 +83,7 @@ dependencies {
 ```
 
 **Maven**:
+
 ```xml
 <dependency>
     <groupId>zm.hashcode</groupId>
@@ -102,6 +130,7 @@ client.close();
 ### Common Use Cases
 
 **Peer-to-Peer Payment**:
+
 ```java
 var quote = client.quotes()
     .create(q -> q.walletAddress(aliceWallet).receiver(bobIncomingPayment))
@@ -113,6 +142,7 @@ var payment = client.outgoingPayments()
 ```
 
 **E-commerce Checkout**:
+
 ```java
 var checkoutPayment = client.incomingPayments()
     .create(request -> request
@@ -151,6 +181,7 @@ cd open-payments-java
 📚 **[Complete Documentation Index](docs/INDEX.md)** - All guides and references
 
 **Quick Links**:
+
 - [Quick Reference Guide](docs/QUICK_REFERENCE.md) - Common operations and code examples
 - [API Coverage](docs/API_COVERAGE.md) - Complete Open Payments API mapping
 - [Architecture Guide](docs/ARCHITECTURE.md) - Design principles and component structure
@@ -162,6 +193,7 @@ cd open-payments-java
 **Current Stage**: 🚧 Development (Pre-Release)
 
 #### ✅ Completed
+
 - Complete API interfaces and structure
 - Java 25 record-based data models
 - Full Open Payments API coverage design
@@ -169,12 +201,14 @@ cd open-payments-java
 - Build tooling (Gradle, Checkstyle, Spotless)
 
 #### 🚧 In Progress
+
 - Service implementations
 - HTTP client integration
 - GNAP authorization flow
 - Integration tests
 
 #### 📋 Planned
+
 - Complete unit test implementations
 - Performance optimization
 - Maven Central publication
@@ -189,6 +223,7 @@ See [PROJECT_STATUS.md](PROJECT_STATUS.md) for detailed roadmap.
 We welcome contributions! Whether fixing bugs, adding features, or improving documentation, your help is appreciated.
 
 **Quick Start**:
+
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/your-feature`
 3. Make changes following our code style
@@ -204,6 +239,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 Licensed under the [Apache License 2.0](LICENSE).
 
 **Key Points**:
+
 - ✅ Commercial use, modification, and distribution allowed
 - ✅ Patent grant included
 - ⚠️ Must include license and copyright notice
