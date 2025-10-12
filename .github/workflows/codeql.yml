@@ -26,6 +26,9 @@ jobs:
       matrix:
         language: [ 'java' ]
 
+    env:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,6 +48,8 @@ jobs:
 
       - name: Build project
         run: ./gradlew clean build -x test --no-daemon
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
