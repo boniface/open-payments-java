@@ -23,10 +23,6 @@ dependencyCheck {
     // Retry configuration for transient failures
     nvd.maxRetryCount = 3
     nvd.delay = 3000
-
-    // Timeout settings
-    nvd.datafeedConnectionTimeout = 120000  // 2 minutes
-    nvd.datafeedReadTimeout = 120000        // 2 minutes
 }
 
 // Add a task to clean the dependency-check database if corrupted
