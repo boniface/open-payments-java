@@ -1,4 +1,4 @@
-name: CI
+name: CI (Optimized)
 
 on:
   push:
@@ -215,3 +215,4 @@ jobs:
             echo "⚠️  Security/quality checks failed but not blocking"
           fi
           echo "✅ All critical checks passed"
+
