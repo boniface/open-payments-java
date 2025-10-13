@@ -1,9 +1,10 @@
 # Open Payments Java SDK
 
-[![Project Stage](https://img.shields.io/badge/Project%20Stage-Development-yellow.svg)]()
+[![CI](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml/badge.svg)](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/bonifacekabaso/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/bonifacekabaso/open-payments-java)
 [![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.java.net/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![CI](https://img.shields.io/badge/CI-passing-brightgreen.svg)]()
+[![Project Stage](https://img.shields.io/badge/Project%20Stage-Development-yellow.svg)]()
 
 A modern Java 25 SDK for the [Open Payments API](https://openpayments.dev) - enabling interoperable payments across financial institutions, digital wallets, and payment providers.
 

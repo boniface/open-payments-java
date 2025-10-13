@@ -1,13 +1,9 @@
 name: CodeQL Security Analysis
 
-# NOTE: This workflow requires Code Scanning to be enabled in repository settings:
-# Settings → Code security and analysis → Code scanning → Set up → Default
-
+# Run CodeQL only on schedule and main branch (CI already covers PR/develop)
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
   schedule:
     # Run at 00:00 UTC every Monday
     - cron: '0 0 * * 1'
@@ -43,11 +39,10 @@ jobs:
           languages: ${{ matrix.language }}
           queries: security-and-quality
 
-      - name: Build project
-        run: ./gradlew clean build -x test --no-daemon
+      - name: Build project (lightweight, no tests)
+        run: ./gradlew clean compileJava compileTestJava --no-daemon
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
-        continue-on-error: true  # Don't fail if Code Scanning is not enabled
         with:
           category: "/language:${{ matrix.language }}"

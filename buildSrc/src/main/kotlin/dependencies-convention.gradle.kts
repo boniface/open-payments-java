@@ -5,7 +5,6 @@ plugins {
 val httpClient5Version = "5.5.1"
 val okhttpVersion = "5.1.0"
 val jacksonVersion = "2.20.0"
-val httpSignaturesVersion = "1.8"
 val jakartaValidationVersion = "3.1.1"
 val hibernateValidatorVersion = "9.0.1.Final"
 val slf4jVersion = "2.0.17"
@@ -24,10 +23,11 @@ dependencies {
     // JSON Processing - Jackson for JSON serialization/deserialization
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:$jacksonVersion")
 
-    // HTTP Signatures - For Open Payments authentication
-    implementation("org.tomitribe:tomitribe-http-signatures:$httpSignaturesVersion")
+    // Note: HTTP Signatures (RFC 9421) implemented in Phase 2 using custom HttpSignatureService
+    // No external signature library dependency required
 
     // Validation
     implementation("jakarta.validation:jakarta.validation-api:$jakartaValidationVersion")
