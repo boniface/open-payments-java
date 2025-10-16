@@ -106,7 +106,7 @@ public interface OpenPaymentsClient extends AutoCloseable {
      * @return a new builder instance
      */
     static OpenPaymentsClientBuilder builder() {
-        throw new UnsupportedOperationException("Implementation pending");
+        return new DefaultOpenPaymentsClientBuilder();
     }
 
     /**

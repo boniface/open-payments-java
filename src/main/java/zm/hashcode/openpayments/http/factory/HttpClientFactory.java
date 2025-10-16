@@ -79,7 +79,7 @@ public final class HttpClientFactory {
     private static final String DEFAULT_NAME = "__default__";
 
     private HttpClientFactory() {
-        // Prevent instantiation
+        // Prevent instantiation - utility class with static methods only
     }
 
     /**
