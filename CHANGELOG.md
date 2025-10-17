@@ -16,9 +16,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Async-first API with CompletableFuture
 - Immutable data models using Java records
 - Comprehensive JavaDoc documentation
-- 277 unit tests with 100% pass rate
+- 465 unit tests with 100% pass rate
 - PMD and Checkstyle quality checks
 - Automatic code formatting with Spotless
+- Complete resource service implementations:
+  - WalletAddressService for wallet address discovery
+  - IncomingPaymentService for receiving payments
+  - OutgoingPaymentService for sending payments
+  - QuoteService for exchange rate quotes
+- Comprehensive usage examples and documentation
+
+### Changed
+- Converted payment and auth domain models to Java records for improved immutability
+  - IncomingPayment, OutgoingPayment, Quote (payment models)
+  - AccessToken, Grant, AccessRight (auth models)
+  - Preserved builder patterns for backward compatibility
+  - Added Optional-returning getters for nullable fields
+  - Maintained custom equals/hashCode/toString implementations
+
+### Removed
+- Phase-specific TODO comments from completed implementation
+- Replaced with proper documentation for future enhancements
 
 ## [0.1.0] - Initial Development
 
@@ -71,13 +89,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CHANGELOG.md
 - Code quality improvements (PMD, Checkstyle compliance)
 
+### Phase 7: Open Payments Resources ✅
+- **7.1: OpenPaymentsClient Implementation**
+  - DefaultOpenPaymentsClient with service accessors
+  - DefaultOpenPaymentsClientBuilder with fluent API
+  - 33 comprehensive unit tests
+  - Thread-safe resource management
+
+- **7.2: WalletAddressService Implementation**
+  - DefaultWalletAddressService for wallet discovery
+  - get(String/URI) for wallet address metadata
+  - getKeys() for public key retrieval
+  - 16 unit tests with mock HTTP responses
+
+- **7.3: IncomingPaymentService Implementation**
+  - DefaultIncomingPaymentService for receiving payments
+  - create(), get(), list(), complete() operations
+  - Cursor-based pagination support
+  - 21 unit tests covering all CRUD operations
+
+- **7.4: OutgoingPaymentService Implementation**
+  - DefaultOutgoingPaymentService for sending payments
+  - create(), get(), list() operations
+  - Quote-based payment creation
+  - 20 unit tests with comprehensive coverage
+
+- **7.5: QuoteService Implementation**
+  - DefaultQuoteService for exchange rate quotes
+  - create() with sendAmount or receiveAmount
+  - get() for quote retrieval
+  - isExpired() convenience method
+  - 19 unit tests
+
+- **7.6: Integration and Documentation**
+  - package-info.java for all service packages
+  - Complete CODE_SNIPPETS.md with real-world scenarios (in docs/)
+  - Updated INDEX.md with CODE_SNIPPETS documentation
+  - Updated PROJECT_STATUS.md
+  - Updated CHANGELOG.md
+
 ## Quality Metrics
 
 ### Test Coverage
-- **Total Tests**: 277
-- **Passing**: 277 (100%)
+- **Total Tests**: 465
+- **Passing**: 465 (100%)
 - **Failed**: 0
-- **Skipped**: 198 (future phases)
+- **Skipped**: 14 (integration tests for Phase 8)
 
 ### Code Quality
 - **PMD Main**: 0 violations in implemented phases
