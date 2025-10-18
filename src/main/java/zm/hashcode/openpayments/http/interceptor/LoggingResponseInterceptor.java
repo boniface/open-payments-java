@@ -21,15 +21,11 @@ import zm.hashcode.openpayments.http.core.HttpResponse;
  * client.addResponseInterceptor(new LoggingResponseInterceptor());
  * }</pre>
  */
-public final class LoggingResponseInterceptor implements ResponseInterceptor {
+public record LoggingResponseInterceptor(Level logLevel, Level errorLogLevel, boolean logHeaders,
+        boolean logBody) implements ResponseInterceptor {
 
     private static final Logger LOGGER = Logger.getLogger(LoggingResponseInterceptor.class.getName());
     private static final int MAX_BODY_LOG_LENGTH = 1000;
-
-    private final Level logLevel;
-    private final Level errorLogLevel;
-    private final boolean logHeaders;
-    private final boolean logBody;
 
     /**
      * Creates a logging interceptor with INFO level for success and WARNING for errors.

@@ -27,14 +27,12 @@ import zm.hashcode.openpayments.model.PaginatedResult;
  * <p>
  * Thread-safe and can be reused across multiple requests.
  */
-public final class DefaultOutgoingPaymentService implements OutgoingPaymentService {
+public record DefaultOutgoingPaymentService(HttpClient httpClient,
+        ObjectMapper objectMapper) implements OutgoingPaymentService {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String ACCEPT_HEADER = "Accept";
     private static final String OUTGOING_PAYMENTS_PATH = "/outgoing-payments";
-
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
 
     /**
      * Creates a new DefaultOutgoingPaymentService.

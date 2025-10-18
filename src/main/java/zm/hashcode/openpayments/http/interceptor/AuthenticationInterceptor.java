@@ -30,9 +30,7 @@ import zm.hashcode.openpayments.http.core.HttpRequest;
  * client.addRequestInterceptor(gnap);
  * }</pre>
  */
-public final class AuthenticationInterceptor implements RequestInterceptor {
-
-    private final String authorizationHeaderValue;
+public record AuthenticationInterceptor(String authorizationHeaderValue) implements RequestInterceptor {
 
     /**
      * Creates an authentication interceptor with the given Authorization header value.
@@ -40,9 +38,8 @@ public final class AuthenticationInterceptor implements RequestInterceptor {
      * @param authorizationHeaderValue
      *            the full value for the Authorization header
      */
-    private AuthenticationInterceptor(String authorizationHeaderValue) {
-        this.authorizationHeaderValue = Objects.requireNonNull(authorizationHeaderValue,
-                "authorizationHeaderValue must not be null");
+    public AuthenticationInterceptor {
+        Objects.requireNonNull(authorizationHeaderValue, "authorizationHeaderValue must not be null");
     }
 
     /**

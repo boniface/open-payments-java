@@ -27,15 +27,13 @@ import zm.hashcode.openpayments.model.PaginatedResult;
  * <p>
  * Thread-safe and can be reused across multiple requests.
  */
-public final class DefaultIncomingPaymentService implements IncomingPaymentService {
+public record DefaultIncomingPaymentService(HttpClient httpClient,
+        ObjectMapper objectMapper) implements IncomingPaymentService {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String ACCEPT_HEADER = "Accept";
     private static final String INCOMING_PAYMENTS_PATH = "/incoming-payments";
     private static final String COMPLETE_PATH = "/complete";
-
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
 
     /**
      * Creates a new DefaultIncomingPaymentService.
@@ -47,9 +45,9 @@ public final class DefaultIncomingPaymentService implements IncomingPaymentServi
      * @throws NullPointerException
      *             if any parameter is null
      */
-    public DefaultIncomingPaymentService(HttpClient httpClient, ObjectMapper objectMapper) {
-        this.httpClient = Objects.requireNonNull(httpClient, "httpClient must not be null");
-        this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper must not be null");
+    public DefaultIncomingPaymentService {
+        Objects.requireNonNull(httpClient, "httpClient must not be null");
+        Objects.requireNonNull(objectMapper, "objectMapper must not be null");
     }
 
     @Override
