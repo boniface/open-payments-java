@@ -35,11 +35,9 @@ import zm.hashcode.openpayments.http.core.HttpResponse;
  * client.addResponseInterceptor(errorHandler);
  * }</pre>
  */
-public final class ErrorHandlingInterceptor implements ResponseInterceptor {
+public record ErrorHandlingInterceptor(ObjectMapper objectMapper) implements ResponseInterceptor {
 
     private static final Logger LOGGER = Logger.getLogger(ErrorHandlingInterceptor.class.getName());
-
-    private final ObjectMapper objectMapper;
 
     /**
      * Creates an error handling interceptor.
@@ -47,8 +45,8 @@ public final class ErrorHandlingInterceptor implements ResponseInterceptor {
      * @param objectMapper
      *            the JSON object mapper for parsing error responses
      */
-    public ErrorHandlingInterceptor(ObjectMapper objectMapper) {
-        this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper must not be null");
+    public ErrorHandlingInterceptor {
+        Objects.requireNonNull(objectMapper, "objectMapper must not be null");
     }
 
     @Override

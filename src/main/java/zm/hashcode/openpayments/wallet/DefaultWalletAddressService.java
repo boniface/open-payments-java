@@ -23,13 +23,11 @@ import zm.hashcode.openpayments.http.core.HttpResponse;
  * <p>
  * Thread-safe and can be reused across multiple requests.
  */
-public final class DefaultWalletAddressService implements WalletAddressService {
+public record DefaultWalletAddressService(HttpClient httpClient,
+        ObjectMapper objectMapper) implements WalletAddressService {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String JWKS_PATH = "/jwks.json";
-
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
 
     /**
      * Creates a new DefaultWalletAddressService.
@@ -41,9 +39,9 @@ public final class DefaultWalletAddressService implements WalletAddressService {
      * @throws NullPointerException
      *             if any parameter is null
      */
-    public DefaultWalletAddressService(HttpClient httpClient, ObjectMapper objectMapper) {
-        this.httpClient = Objects.requireNonNull(httpClient, "httpClient must not be null");
-        this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper must not be null");
+    public DefaultWalletAddressService {
+        Objects.requireNonNull(httpClient, "httpClient must not be null");
+        Objects.requireNonNull(objectMapper, "objectMapper must not be null");
     }
 
     @Override

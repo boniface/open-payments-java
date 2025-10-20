@@ -20,13 +20,10 @@ import zm.hashcode.openpayments.http.core.HttpRequest;
  * client.addRequestInterceptor(new LoggingRequestInterceptor());
  * }</pre>
  */
-public final class LoggingRequestInterceptor implements RequestInterceptor {
+public record LoggingRequestInterceptor(Level logLevel, boolean logHeaders,
+        boolean logBody) implements RequestInterceptor {
 
     private static final Logger LOGGER = Logger.getLogger(LoggingRequestInterceptor.class.getName());
-
-    private final Level logLevel;
-    private final boolean logHeaders;
-    private final boolean logBody;
 
     /**
      * Creates a logging interceptor with INFO level and headers logging enabled.
