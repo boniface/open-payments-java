@@ -25,14 +25,11 @@ import zm.hashcode.openpayments.http.core.HttpResponse;
  * <p>
  * Thread-safe and can be reused across multiple requests.
  */
-public final class DefaultQuoteService implements QuoteService {
+public record DefaultQuoteService(HttpClient httpClient, ObjectMapper objectMapper) implements QuoteService {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String ACCEPT_HEADER = "Accept";
     private static final String QUOTES_PATH = "/quotes";
-
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
 
     /**
      * Creates a new DefaultQuoteService.
@@ -44,9 +41,9 @@ public final class DefaultQuoteService implements QuoteService {
      * @throws NullPointerException
      *             if any parameter is null
      */
-    public DefaultQuoteService(HttpClient httpClient, ObjectMapper objectMapper) {
-        this.httpClient = Objects.requireNonNull(httpClient, "httpClient must not be null");
-        this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper must not be null");
+    public DefaultQuoteService {
+        Objects.requireNonNull(httpClient, "httpClient must not be null");
+        Objects.requireNonNull(objectMapper, "objectMapper must not be null");
     }
 
     @Override

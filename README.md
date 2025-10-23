@@ -1,7 +1,8 @@
 # Open Payments Java SDK
 
-[![CI](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml/badge.svg)](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/bonifacekabaso/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/bonifacekabaso/open-payments-java)
+[![CI](https://github.com/boniface/open-payments-java/actions/workflows/ci.yml/badge.svg)](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml)
+[![Security & Quality](https://img.shields.io/github/actions/workflow/status/boniface/open-payments-java/ci.yml?label=Security%20%26%20Quality&query=jobs.security-and-quality.conclusion)](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml)
+[![JaCoCo](https://img.shields.io/badge/JaCoCo-Coverage-green.svg)](https://github.com/boniface/open-payments-java/actions/workflows/ci.yml)
 [![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.java.net/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Project Stage](https://img.shields.io/badge/Project%20Stage-Development-yellow.svg)]()
@@ -34,12 +35,12 @@ graph TD
     ASE["<b>Financial Accounts<b/> <br/> <small>(Ledger, Wallet, etc)</small>"]
 
     subgraph SDK["Open Payments API Servers"]
-    
+
         Auth["Authorization Server <br/> (GNAP Protocol)"]
         Resource["Resource Server Payments <br/> (Payment, Quotes...)"]
         Auth ~~~ Note
         Resource ~~~ Note
-        
+
         Note["Operated by Account Service Entity (ASE)<br/> (Bank, Wallet Provider, Payment Processor)"]
     end
 
@@ -267,4 +268,3 @@ Licensed under the [Apache License 2.0](LICENSE).
 ---
 
 **Status**: 🚧 Under Development | **Version**: 1.0-SNAPSHOT | **Java**: 25+
-
