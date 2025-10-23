@@ -93,6 +93,8 @@ jobs:
   dependency-check:
     name: Dependency Security Check
     runs-on: ubuntu-latest
+    env:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -106,6 +108,8 @@ jobs:
 
       - name: Run dependency vulnerability check
         run: ./gradlew dependencyCheckAnalyze --no-daemon || true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
       - name: Upload dependency check report
         uses: actions/upload-artifact@v4
