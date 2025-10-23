@@ -1,6 +1,9 @@
-package zm.hashcode.openpayments.http;
+package zm.hashcode.openpayments.http.core;
 
 import java.util.concurrent.CompletableFuture;
+
+import zm.hashcode.openpayments.http.interceptor.RequestInterceptor;
+import zm.hashcode.openpayments.http.interceptor.ResponseInterceptor;
 
 /**
  * HTTP client interface for Open Payments API communication.

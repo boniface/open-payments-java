@@ -1,4 +1,6 @@
-package zm.hashcode.openpayments.http;
+package zm.hashcode.openpayments.http.interceptor;
+
+import zm.hashcode.openpayments.http.core.HttpRequest;
 
 /**
  * Interceptor for HTTP requests.
