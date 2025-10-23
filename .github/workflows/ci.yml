@@ -152,6 +152,11 @@ jobs:
       - name: Run static analysis (PMD, SpotBugs)
         run: ./gradlew pmdMain pmdTest spotbugsMain spotbugsTest --no-daemon --continue
 
+      # Clean dependency-check database to avoid corruption
+      - name: Clean dependency check database
+        run: ./gradlew cleanDependencyCheckDb --no-daemon
+        continue-on-error: true
+
       # Run dependency vulnerability check (slowest, runs separately)
       - name: Run dependency vulnerability check
         run: ./gradlew dependencyCheckAnalyze --no-daemon
