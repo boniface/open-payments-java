@@ -74,6 +74,7 @@ public final class ClientKeyGenerator {
      * @throws IllegalArgumentException
      *             if keyId is blank
      */
+    @SuppressWarnings("java:S4426") // Ed25519 is a secure, modern elliptic curve algorithm (RFC 8032)
     public static ClientKey generate(String keyId) {
         Objects.requireNonNull(keyId, "keyId must not be null");
 
