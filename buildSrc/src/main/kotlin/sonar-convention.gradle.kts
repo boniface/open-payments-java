@@ -1,8 +1,3 @@
-/**
- * Convention plugin for SonarQube configuration.
- * Configures SonarQube/SonarCloud integration for code quality analysis.
- */
-
 plugins {
     id("org.sonarqube")
 }

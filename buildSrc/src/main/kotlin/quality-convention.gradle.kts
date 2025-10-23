@@ -1,10 +1,5 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 
-/**
- * Convention plugin for code quality tools.
- * Configures Spotless (code formatting) and Checkstyle (style checking).
- */
-
 plugins {
     checkstyle
     id("com.diffplug.spotless")
@@ -25,44 +20,6 @@ configure<SpotlessExtension> {
         // Basic formatting
         endWithNewline()
         trimTrailingWhitespace()
-
-        // Note: Indentation is handled by Eclipse formatter configuration
-        // Custom formatting steps are commented out due to serialization issues with config cache
-        // Fix tabs
-        // replaceRegex("Fix tabs", "\t", "    ")
-
-        // Fix star imports in test files
-        // custom("fixStarImports") { contents ->
-        //     contents
-        //         .replace(
-        //             "import org.junit.jupiter.api.Assertions.*;",
-        //             "import org.junit.jupiter.api.Assertions.assertEquals;\n" +
-        //                 "import org.junit.jupiter.api.Assertions.assertNotNull;\n" +
-        //                 "import org.junit.jupiter.api.Assertions.assertThrows;\n" +
-        //                 "import org.junit.jupiter.api.Assertions.assertTrue;\n" +
-        //                 "import org.junit.jupiter.api.Assertions.assertFalse;\n" +
-        //                 "import org.junit.jupiter.api.Assertions.fail;",
-        //         )
-        //         .replace(
-        //             "import static org.junit.jupiter.api.Assertions.*;",
-        //             "import static org.junit.jupiter.api.Assertions.assertEquals;\n" +
-        //                 "import static org.junit.jupiter.api.Assertions.assertNotNull;\n" +
-        //                 "import static org.junit.jupiter.api.Assertions.assertThrows;\n" +
-        //                 "import static org.junit.jupiter.api.Assertions.assertTrue;\n" +
-        //                 "import static org.junit.jupiter.api.Assertions.assertFalse;\n" +
-        //                 "import static org.junit.jupiter.api.Assertions.fail;",
-        //         )
-        // }
-
-        // Add braces to if statements for Checkstyle compliance
-        // custom("addBracesToIf") { contents ->
-        //     contents
-        //         .replace(Regex("if \\(this == o\\) return true;"), "if (this == o) { return true; }")
-        //         .replace(
-        //             Regex("if \\(o == null \\|\\| getClass\\(\\) != o\\.getClass\\(\\)\\) return false;"),
-        //             "if (o == null || getClass() != o.getClass()) { return false; }",
-        //         )
-        // }
     }
 
     kotlinGradle {
