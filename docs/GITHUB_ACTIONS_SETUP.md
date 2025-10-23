@@ -2,7 +2,7 @@
 
 ## What's Been Configured
 
-This project has  CI/CD following Maven Central.
+This project has automated CI/CD following Maven Central Portal best practices.
 
 ## Workflows Created
 
@@ -25,12 +25,12 @@ Runs on every push and PR to `main`/`develop`
 - Java 25
 
 ### 2. **Release Workflow** (`.github/workflows/release.yml`)
-Triggers on version tags (e.g., `v1.0.0`)
+Triggers on version tags (e.g., `v0.1.0`)
 
 **Steps:**
 - Run all quality checks
 - Build and sign artifacts (GPG)
-- Publish to Maven Central (Sonatype OSSRH)
+- Publish to Maven Central (Central Portal)
 - Create GitHub Release
 - Deploy JavaDoc to GitHub Pages
 - Verify Maven Central availability
@@ -79,35 +79,41 @@ Configure these in **GitHub Settings → Secrets and variables → Actions**:
 
 ### Maven Central Publishing
 ```
-SONATYPE_USERNAME     - Your Sonatype JIRA username
-SONATYPE_PASSWORD     - Your Sonatype JIRA password
-GPG_PRIVATE_KEY       - Base64 encoded GPG private key
-GPG_PASSPHRASE        - Your GPG key passphrase
+CENTRAL_PORTAL_USERNAME  - Central Portal token username
+CENTRAL_PORTAL_PASSWORD  - Central Portal token password
+GPG_PRIVATE_KEY         - ASCII armored GPG private key
+GPG_PASSPHRASE          - Your GPG key passphrase
+SIGNING_KEY_ID          - Last 8 characters of GPG key ID
 ```
 
 ### Code Coverage
 ```
-CODECOV_TOKEN         - Token from codecov.io
+CODECOV_TOKEN           - Token from codecov.io
 ```
 
 ### Code Quality
 ```
-SONAR_TOKEN           - Token from sonarcloud.io
+SONAR_TOKEN             - Token from sonarcloud.io
 ```
 
 ## Setup Checklist
 
 ### Before First Release
 
-- [ ] **Create Sonatype JIRA account**
-  - Register at https://issues.sonatype.org
-  - Create New Project ticket for `zm.hashcode`
-  - Wait for approval (~2 business days)
+- [ ] **Create Central Portal account**
+  - Register at https://central.sonatype.com
+  - **Note:** `zm.hashcode` namespace is already verified ✓
+
+- [ ] **Generate Central Portal token**
+  - Go to https://central.sonatype.com/account
+  - Click "Generate User Token"
+  - Save username and password
 
 - [ ] **Generate GPG key**
   ```bash
   gpg --gen-key
-  gpg --export-secret-keys YOUR_KEY_ID | base64 > private-key.txt
+  gpg --export-secret-keys --armor YOUR_KEY_ID
+  gpg --keyserver keys.openpgp.org --send-keys YOUR_KEY_ID
   gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID
   ```
 
@@ -123,8 +129,8 @@ SONAR_TOKEN           - Token from sonarcloud.io
   - Update `sonar.projectKey` and `sonar.organization` in build.gradle.kts
 
 - [ ] **Configure GitHub Secrets**
-  - Add all 6 secrets listed above
-  - Test with a snapshot build first
+  - Add all 7 secrets listed above
+  - See [RELEASE_GUIDE.md](../RELEASE_GUIDE.md) for details
 
 - [ ] **Update Repository Settings**
   - Enable GitHub Pages (Settings → Pages → Source: gh-pages branch)
@@ -136,9 +142,9 @@ SONAR_TOKEN           - Token from sonarcloud.io
 Replace placeholders with actual values:
 
 ```markdown
-[![CI](https://github.com/YOUR_USERNAME/open-payments-java/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/open-payments-java/actions)
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_USERNAME/open-payments-java)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=YOUR_ORG_open-payments-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=YOUR_ORG_open-payments-java)
+[![CI](https://github.com/boniface/open-payments-java/workflows/CI/badge.svg)](https://github.com/boniface/open-payments-java/actions)
+[![codecov](https://codecov.io/gh/boniface/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/boniface/open-payments-java)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=boniface_open-payments-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=boniface_open-payments-java)
 [![Maven Central](https://img.shields.io/maven-central/v/zm.hashcode/open-payments-java.svg)](https://search.maven.org/artifact/zm.hashcode/open-payments-java)
 ```
 
@@ -146,32 +152,32 @@ Replace placeholders with actual values:
 
 ### 1. Prepare Release
 ```bash
-# Update version in build.gradle.kts
-version = "1.0.0"
+# Update version in gradle.properties
+version=0.1.0
 
-git add build.gradle.kts
-git commit -m "chore: prepare release 1.0.0"
+git add gradle.properties
+git commit -m "Release version 0.1.0"
 git push
 ```
 
 ### 2. Create Tag
 ```bash
-git tag -a v1.0.0 -m "Release version 1.0.0"
-git push origin v1.0.0
+git tag -a v0.1.0 -m "Release version 0.1.0"
+git push origin v0.1.0
 ```
 
 ### 3. Monitor
 - Watch GitHub Actions tab
 - Release workflow runs automatically
-- Artifact published to Maven Central in ~10-30 minutes
+- Artifact published to Maven Central in ~15-30 minutes
 
 ### 4. Post-Release
 ```bash
-# Bump to next snapshot version
-version = "1.1.0-SNAPSHOT"
+# Bump to next version
+version=0.2.0
 
-git add build.gradle.kts
-git commit -m "chore: prepare for next development iteration"
+git add gradle.properties
+git commit -m "Bump version to 0.2.0"
 git push
 ```
 
@@ -214,7 +220,7 @@ After setup, you'll have:
 
 ## 📚 Documentation
 
-See [docs/CI_CD_SETUP.md](docs/CI_CD_SETUP.md) for detailed documentation.
+See [docs/CI_CD_SETUP.md](CI_CD_SETUP.md) for detailed documentation.
 
 ## What Gets Checked on Every PR
 

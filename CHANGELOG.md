@@ -8,35 +8,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Complete Open Payments API implementation with Java 25
-- GNAP (Grant Negotiation and Authorization Protocol) support
-- HTTP Message Signatures with Ed25519
-- Token lifecycle management (rotation and revocation)
-- HTTP interceptors for logging, authentication, and error handling
-- Async-first API with CompletableFuture
-- Immutable data models using Java records
-- Comprehensive JavaDoc documentation
-- 465 unit tests with 100% pass rate
-- PMD and Checkstyle quality checks
-- Automatic code formatting with Spotless
-- Complete resource service implementations:
-  - WalletAddressService for wallet address discovery
-  - IncomingPaymentService for receiving payments
-  - OutgoingPaymentService for sending payments
-  - QuoteService for exchange rate quotes
-- Comprehensive usage examples and documentation
+- 📦 **Maven Central Publishing Setup**
+  - Automated CI/CD publishing via GitHub Actions
+  - Central Portal integration
+  - Comprehensive release guide (RELEASE_GUIDE.md)
+  - GPG artifact signing configuration
+  - Automated GitHub Release creation
+  - JavaDoc deployment to GitHub Pages
+  - Publication verification in CI/CD pipeline
 
 ### Changed
-- Converted payment and auth domain models to Java records for improved immutability
-  - IncomingPayment, OutgoingPayment, Quote (payment models)
-  - AccessToken, Grant, AccessRight (auth models)
-  - Preserved builder patterns for backward compatibility
-  - Added Optional-returning getters for nullable fields
-  - Maintained custom equals/hashCode/toString implementations
+- 🔢 **Versioning Strategy**
+  - Changed from `1.0.0-SNAPSHOT` to `0.1.0` (pre-1.0 development)
+  - Adopted semantic versioning with 0.x.y for initial development
+  - Configured for release-only versions (no SNAPSHOT support)
+
+- 🔧 **Publishing Configuration**
+  - Fixed Maven Central Portal URL to `https://central.sonatype.com`
+  - Updated to token-based authentication (Central Portal tokens)
+  - Removed legacy OSSRH references and configurations
+  - Removed duplicate version declarations in build files
+  - Simplified publishing workflow 
+
+- 📝 **Documentation**
+  - Added publishing docs into single comprehensive RELEASE_GUIDE.md
+  - Updated CI_CD_SETUP.md to reflect Central Portal approach
+  - Updated GITHUB_ACTIONS_SETUP.md with correct secret names
+
+- ⚙️ **CI/CD Workflow**
+  - Updated release.yml for Central Portal authentication
+  - Added GPG key import step using crazy-max/ghaction-import-gpg
+  - Updated secret names: `CENTRAL_PORTAL_*` instead of `SONATYPE_*`
+  - Added automatic pre-release flag for 0.x versions
+  - Enhanced artifact verification steps
 
 ### Removed
-- Phase-specific TODO comments from completed implementation
-- Replaced with proper documentation for future enhancements
+- 🗑️ **Cleanup**
+  - Removed all SNAPSHOT version references from codebase
+  - Removed OSSRH (legacy Sonatype) documentation and references
+  - Removed duplicate/redundant publishing documentation files
+  - Removed old sunset `s01.oss.sonatype.org` endpoint references
 
 ## [0.1.0] - Initial Development
 
@@ -163,7 +174,6 @@ Not applicable for initial release.
 
 1. Integration tests for Phases 5+ are still pending implementation
 2. Performance benchmarks not yet established
-3. Maven Central publication pending first stable release
 
 ## Future Plans
 
@@ -173,17 +183,18 @@ Not applicable for initial release.
 - Additional authentication schemes
 - Enhanced error recovery
 
-### Version 1.0.0
-- Production-ready release
+### Version 1.0.0 (Stable Release)
+- Production-ready release with API stability commitment
 - Full Open Payments API coverage
-- Performance benchmarks
-- Maven Central publication
+- Performance benchmarks and optimization
 - Comprehensive integration testing
 - Production deployment guide
+- First stable release on Maven Central
 
 ## Contributors
 
 - Boniface Kabaso - Initial implementation
+- Espoir Diteekemena - Initial implementation and Documentation
 
 ## References
 

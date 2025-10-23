@@ -1,7 +1,7 @@
 # Open Payments Java SDK
 
-[![CI](https://github.com/boniface/open-payments-java/actions/workflows/ci.yml/badge.svg)](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml)
-[![Security & Quality](https://img.shields.io/github/actions/workflow/status/boniface/open-payments-java/ci.yml?label=Security%20%26%20Quality&query=jobs.security-and-quality.conclusion)](https://github.com/bonifacekabaso/open-payments-java/actions/workflows/ci.yml)
+[![CI](https://github.com/boniface/open-payments-java/actions/workflows/ci.yml/badge.svg)](https://github.com/boniface/open-payments-java/actions/workflows/ci.yml)
+[![Security & Quality](https://img.shields.io/github/actions/workflow/status/boniface/open-payments-java/ci.yml?label=Security%20%26%20Quality&query=jobs.security-and-quality.conclusion)](https://github.com/boniface/open-payments-java/actions/workflows/ci.yml)
 [![JaCoCo](https://img.shields.io/badge/JaCoCo-Coverage-green.svg)](https://github.com/boniface/open-payments-java/actions/workflows/ci.yml)
 [![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.java.net/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -41,7 +41,7 @@ graph TD
         Auth ~~~ Note
         Resource ~~~ Note
 
-        Note["Operated by Account Service Entity (ASE)<br/> (Bank, Wallet Provider, Payment Processor)"]
+        Note["Operated by Account Service Entity (ASE) (Bank, Wallet Provider, Payment Processor)"]
     end
 
     App -->|HTTP Request via SDK| SDK
@@ -80,7 +80,7 @@ graph TD
 
 ```kotlin
 dependencies {
-    implementation("zm.hashcode:open-payments-java:1.0-SNAPSHOT")
+    implementation("zm.hashcode:open-payments-java:0.1.0")
 }
 ```
 
@@ -90,9 +90,11 @@ dependencies {
 <dependency>
     <groupId>zm.hashcode</groupId>
     <artifactId>open-payments-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </dependency>
 ```
+
+> **Note:** Versions 0.x.y are pre-1.0.0 releases. The API may change between releases until 1.0.0 is reached.
 
 ### Basic Usage
 
@@ -213,10 +215,10 @@ cd open-payments-java
 
 - Complete unit test implementations
 - Performance optimization
-- Maven Central publication
+- Maven Central publication (see [MAVEN_CENTRAL_PUBLISHING.md](MAVEN_CENTRAL_PUBLISHING.md))
 - Version 1.0 release
 
-**Version**: 0.1.0-SNAPSHOT | **Target Release**: 1.0.0 | **Java**: 25+
+**Version**: 1.0.0-SNAPSHOT | **Target Release**: 1.0.0 | **Java**: 25+
 
 See [PROJECT_STATUS.md](PROJECT_STATUS.md) for detailed roadmap.
 

@@ -16,8 +16,9 @@ plugins {
     id("utilities-convention")
 }
 
-group = "zm.hashcode"
-version = "1.0-SNAPSHOT"
+// Group and version are defined in gradle.properties
+// group = zm.hashcode
+// version = 1.0.0-SNAPSHOT
 
 java {
     toolchain {
