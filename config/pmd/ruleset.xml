@@ -8,14 +8,12 @@
 
     <!-- Best Practices -->
     <rule ref="category/java/bestpractices.xml">
-        <exclude name="JUnitTestsShouldIncludeAssert"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
-        <!-- Tests often have duplicate literals for readability -->
-        <exclude name="AvoidDuplicateLiterals"/>
+        <!-- Exclude rules that don't exist in PMD 7.17.0 or are not applicable -->
     </rule>
 
     <!-- Code Style -->
     <rule ref="category/java/codestyle.xml">
+        <exclude name="UseExplicitTypes"/>
         <exclude name="AtLeastOneConstructor"/>
         <exclude name="OnlyOneReturn"/>
         <exclude name="ShortVariable"/>
@@ -45,7 +43,6 @@
 
     <!-- Error Prone -->
     <rule ref="category/java/errorprone.xml">
-        <exclude name="BeanMembersShouldSerialize"/>
         <!-- Java records intentionally have fields with same name as accessor methods -->
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <!-- DataflowAnomalyAnalysis removed in PMD 7.x -->
