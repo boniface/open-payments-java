@@ -384,7 +384,11 @@ class HttpSignatureServiceTest {
     }
 
     private static long extractCreatedTime(String signatureInput) {
-        return Long.parseLong(extractPattern(signatureInput, "created=(\\d+)", "No created time found"));
+        try {
+            return Long.parseLong(extractPattern(signatureInput, "created=(\\d+)", "No created time found"));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid created time value in signature input: " + signatureInput, e);
+        }
     }
 
     private static String extractSignatureValue(String signatureHeader) {
