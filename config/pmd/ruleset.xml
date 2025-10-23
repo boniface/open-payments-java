@@ -42,7 +42,7 @@
     <!-- Error Prone -->
     <rule ref="category/java/errorprone.xml">
         <exclude name="BeanMembersShouldSerialize"/>
-        <exclude name="DataflowAnomalyAnalysis"/>
+        <!-- DataflowAnomalyAnalysis removed in PMD 7.x -->
     </rule>
 
     <!-- Multithreading -->
