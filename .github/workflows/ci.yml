@@ -152,6 +152,14 @@ jobs:
       - name: Run static analysis (PMD, SpotBugs)
         run: ./gradlew pmdMain pmdTest spotbugsMain spotbugsTest --no-daemon --continue
 
+      # Clean Gradle caches to ensure fresh run without configuration cache
+      - name: Clean Gradle configuration cache
+        run: |
+          rm -rf ~/.gradle/configuration-cache
+          rm -rf .gradle/configuration-cache
+          rm -rf build/reports/configuration-cache
+        continue-on-error: true
+
       # Clean dependency-check database to avoid corruption
       - name: Clean dependency check database
         run: ./gradlew cleanDependencyCheckDb --no-daemon --no-configuration-cache
@@ -166,7 +174,8 @@ jobs:
             --no-configuration-cache \
             --no-build-cache \
             --rerun-tasks \
-            || echo "::warning::Dependency check failed but continuing workflow"
+            --stacktrace \
+            2>&1 || echo "::warning::Dependency check failed but continuing workflow"
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         continue-on-error: true
