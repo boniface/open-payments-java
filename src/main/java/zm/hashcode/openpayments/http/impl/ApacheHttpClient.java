@@ -112,7 +112,7 @@ public final class ApacheHttpClient implements HttpClient {
 
         // Add custom SSL context if provided
         config.getSslContext().ifPresent(sslContext -> {
-            var tlsStrategy = ClientTlsStrategyBuilder.create().setSslContext(sslContext).build();
+            var tlsStrategy = ClientTlsStrategyBuilder.create().setSslContext(sslContext).buildAsync();
             connectionManagerBuilder.setTlsStrategy(tlsStrategy);
         });
 
