@@ -28,18 +28,18 @@ A modern Java 25 SDK for the [Open Payments API](https://openpayments.dev) - ena
 
 ```mermaid
 graph TD
-    App["<b>Your Application</b> <br/>(Uses this SDK as client)"]
+    App["<b>Your Java Application</b> <br/> <small> (Uses this SDK as client)</small>"]
 
-    ASE["Financial Account <br/>(ledger and wallet etc)"]
+    ASE["<b>Financial Accounts<b/> <br/> <small>(Ledger, Wallet, etc)</small>"]
 
-    subgraph SDK["Open Payments Java SDK"]
+    subgraph SDK["Open Payments API Servers"]
     
         Auth["Authorization Server <br/> (GNAP Protocol)"]
         Resource["Resource Server Payments <br/> (Payment, Quotes...)"]
         Auth ~~~ Note
         Resource ~~~ Note
         
-        Note["📝 Operated by Account Service Entity (ASE)"]
+        Note["Operated by Account Service Entity (ASE)<br/> (Bank, Wallet Provider, Payment Processor)"]
     end
 
     App -->|HTTP Request via SDK| SDK
