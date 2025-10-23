@@ -18,64 +18,137 @@ import zm.hashcode.openpayments.model.Amount;
  * <p>
  * Fields like {@code receivedAmount} and {@code completed} are managed by the Account Servicing Entity (ASE) and
  * reflect the server-side payment state. The SDK receives this data from the API but does not process payments itself.
+ *
+ * @param id
+ *            the unique identifier for this incoming payment
+ * @param walletAddress
+ *            the wallet address receiving the payment
+ * @param incomingAmount
+ *            the requested incoming amount (optional)
+ * @param receivedAmount
+ *            the actual received amount (optional)
+ * @param completed
+ *            whether the payment is completed
+ * @param expiresAt
+ *            when the payment request expires (optional)
+ * @param createdAt
+ *            when the payment was created
+ * @param updatedAt
+ *            when the payment was last updated
+ * @param metadata
+ *            optional metadata for the payment
  */
-public final class IncomingPayment {
-    private final URI id;
-    private final URI walletAddress;
-    private final Amount incomingAmount;
-    private final Amount receivedAmount;
-    private final boolean completed;
-    private final Instant expiresAt;
-    private final Instant createdAt;
-    private final Instant updatedAt;
-    private final String metadata;
+public record IncomingPayment(URI id, URI walletAddress, Amount incomingAmount, Amount receivedAmount,
+        boolean completed, Instant expiresAt, Instant createdAt, Instant updatedAt, String metadata) {
 
-    private IncomingPayment(Builder builder) {
-        this.id = Objects.requireNonNull(builder.id);
-        this.walletAddress = Objects.requireNonNull(builder.walletAddress);
-        this.incomingAmount = builder.incomingAmount;
-        this.receivedAmount = builder.receivedAmount;
-        this.completed = builder.completed;
-        this.expiresAt = builder.expiresAt;
-        this.createdAt = Objects.requireNonNull(builder.createdAt);
-        this.updatedAt = Objects.requireNonNull(builder.updatedAt);
-        this.metadata = builder.metadata;
+    public IncomingPayment {
+        Objects.requireNonNull(id, "id must not be null");
+        Objects.requireNonNull(walletAddress, "walletAddress must not be null");
+        Objects.requireNonNull(createdAt, "createdAt must not be null");
+        Objects.requireNonNull(updatedAt, "updatedAt must not be null");
     }
 
+    /**
+     * Returns the ID of this incoming payment.
+     *
+     * @return the payment ID
+     */
     public URI getId() {
         return id;
     }
 
+    /**
+     * Returns the wallet address receiving this payment.
+     *
+     * @return the wallet address
+     */
     public URI getWalletAddress() {
         return walletAddress;
     }
 
+    /**
+     * Returns the requested incoming amount, if specified.
+     *
+     * @return an Optional containing the incoming amount
+     */
     public Optional<Amount> getIncomingAmount() {
         return Optional.ofNullable(incomingAmount);
     }
 
+    /**
+     * Returns the actual received amount, if any.
+     *
+     * @return an Optional containing the received amount
+     */
     public Optional<Amount> getReceivedAmount() {
         return Optional.ofNullable(receivedAmount);
     }
 
+    /**
+     * Returns whether this payment is completed.
+     *
+     * @return true if completed, false otherwise
+     */
     public boolean isCompleted() {
         return completed;
     }
 
+    /**
+     * Returns the expiration time of this payment request, if set.
+     *
+     * @return an Optional containing the expiration time
+     */
     public Optional<Instant> getExpiresAt() {
         return Optional.ofNullable(expiresAt);
     }
 
+    /**
+     * Returns when this payment was created.
+     *
+     * @return the creation timestamp
+     */
     public Instant getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * Returns when this payment was last updated.
+     *
+     * @return the last update timestamp
+     */
     public Instant getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * Returns the metadata for this payment, if any.
+     *
+     * @return an Optional containing the metadata
+     */
     public Optional<String> getMetadata() {
         return Optional.ofNullable(metadata);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IncomingPayment that = (IncomingPayment) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "IncomingPayment{" + "id=" + id + ", walletAddress=" + walletAddress + ", completed=" + completed + '}';
     }
 
     public static Builder builder() {
@@ -152,29 +225,8 @@ public final class IncomingPayment {
         }
 
         public IncomingPayment build() {
-            return new IncomingPayment(this);
+            return new IncomingPayment(id, walletAddress, incomingAmount, receivedAmount, completed, expiresAt,
+                    createdAt, updatedAt, metadata);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        IncomingPayment that = (IncomingPayment) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "IncomingPayment{" + "id=" + id + ", walletAddress=" + walletAddress + ", completed=" + completed + '}';
     }
 }

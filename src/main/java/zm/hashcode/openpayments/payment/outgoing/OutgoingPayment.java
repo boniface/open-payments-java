@@ -3,6 +3,7 @@ package zm.hashcode.openpayments.payment.outgoing;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 
 import zm.hashcode.openpayments.model.Amount;
 
@@ -18,64 +19,138 @@ import zm.hashcode.openpayments.model.Amount;
  * Fields like {@code sentAmount} and {@code failed} are managed by the Account Servicing Entity (ASE) and reflect the
  * server-side payment execution state. The SDK receives this data from the API; the actual payment execution is handled
  * by the ASE.
+ *
+ * @param id
+ *            the unique identifier for this outgoing payment
+ * @param walletAddress
+ *            the wallet address sending the payment
+ * @param receiver
+ *            the receiving wallet address
+ * @param sendAmount
+ *            the amount to send (optional)
+ * @param sentAmount
+ *            the actual sent amount (optional)
+ * @param quoteId
+ *            the quote ID used for this payment (optional)
+ * @param failed
+ *            whether the payment has failed
+ * @param createdAt
+ *            when the payment was created
+ * @param updatedAt
+ *            when the payment was last updated
  */
-public final class OutgoingPayment {
-    private final URI id;
-    private final URI walletAddress;
-    private final URI receiver;
-    private final Amount sendAmount;
-    private final Amount sentAmount;
-    private final URI quoteId;
-    private final boolean failed;
-    private final Instant createdAt;
-    private final Instant updatedAt;
+public record OutgoingPayment(URI id, URI walletAddress, URI receiver, Amount sendAmount, Amount sentAmount,
+        URI quoteId, boolean failed, Instant createdAt, Instant updatedAt) {
 
-    private OutgoingPayment(Builder builder) {
-        this.id = Objects.requireNonNull(builder.id);
-        this.walletAddress = Objects.requireNonNull(builder.walletAddress);
-        this.receiver = Objects.requireNonNull(builder.receiver);
-        this.sendAmount = builder.sendAmount;
-        this.sentAmount = builder.sentAmount;
-        this.quoteId = builder.quoteId;
-        this.failed = builder.failed;
-        this.createdAt = Objects.requireNonNull(builder.createdAt);
-        this.updatedAt = Objects.requireNonNull(builder.updatedAt);
+    public OutgoingPayment {
+        Objects.requireNonNull(id, "id must not be null");
+        Objects.requireNonNull(walletAddress, "walletAddress must not be null");
+        Objects.requireNonNull(receiver, "receiver must not be null");
+        Objects.requireNonNull(createdAt, "createdAt must not be null");
+        Objects.requireNonNull(updatedAt, "updatedAt must not be null");
     }
 
+    /**
+     * Returns the ID of this outgoing payment.
+     *
+     * @return the payment ID
+     */
     public URI getId() {
         return id;
     }
 
+    /**
+     * Returns the wallet address sending this payment.
+     *
+     * @return the wallet address
+     */
     public URI getWalletAddress() {
         return walletAddress;
     }
 
+    /**
+     * Returns the receiving wallet address.
+     *
+     * @return the receiver
+     */
     public URI getReceiver() {
         return receiver;
     }
 
-    public Amount getSendAmount() {
-        return sendAmount;
+    /**
+     * Returns the amount to send, if specified.
+     *
+     * @return an Optional containing the send amount
+     */
+    public Optional<Amount> getSendAmount() {
+        return Optional.ofNullable(sendAmount);
     }
 
-    public Amount getSentAmount() {
-        return sentAmount;
+    /**
+     * Returns the actual sent amount, if any.
+     *
+     * @return an Optional containing the sent amount
+     */
+    public Optional<Amount> getSentAmount() {
+        return Optional.ofNullable(sentAmount);
     }
 
-    public URI getQuoteId() {
-        return quoteId;
+    /**
+     * Returns the quote ID, if any.
+     *
+     * @return an Optional containing the quote ID
+     */
+    public Optional<URI> getQuoteId() {
+        return Optional.ofNullable(quoteId);
     }
 
+    /**
+     * Returns whether this payment has failed.
+     *
+     * @return true if failed, false otherwise
+     */
     public boolean isFailed() {
         return failed;
     }
 
+    /**
+     * Returns when this payment was created.
+     *
+     * @return the creation timestamp
+     */
     public Instant getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * Returns when this payment was last updated.
+     *
+     * @return the last update timestamp
+     */
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OutgoingPayment that = (OutgoingPayment) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "OutgoingPayment{" + "id=" + id + ", receiver=" + receiver + ", failed=" + failed + '}';
     }
 
     public static Builder builder() {
@@ -147,24 +222,8 @@ public final class OutgoingPayment {
         }
 
         public OutgoingPayment build() {
-            return new OutgoingPayment(this);
+            return new OutgoingPayment(id, walletAddress, receiver, sendAmount, sentAmount, quoteId, failed, createdAt,
+                    updatedAt);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        OutgoingPayment that = (OutgoingPayment) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

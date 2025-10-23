@@ -15,6 +15,7 @@ This index helps you find the right document for your needs. Each document has a
 | Find **where** code is organized | [SDK Structure & Package Organization](SDK_STRUCTURE.md) |
 | Learn **what** Java 25 features are used | [Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md) |
 | Get started quickly with examples | [Quick Reference & Usage Examples](QUICK_REFERENCE.md) |
+| View comprehensive code snippets | [Code Snippets & Complete Examples](CODE_SNIPPETS.md) |
 | Verify complete API coverage | [API Coverage & Endpoint Mapping](API_COVERAGE.md) |
 | Contribute to the project | [Contributing Guidelines](../CONTRIBUTING.md) |
 | Set up development environment | [Development Setup Guide](SETUP.md) |
@@ -143,6 +144,35 @@ This index helps you find the right document for your needs. Each document has a
 
 ---
 
+### [Code Snippets & Complete Examples](CODE_SNIPPETS.md)
+**Answers**: "Show me working code for common scenarios"
+
+**Contents**:
+- Complete working examples for all resource operations
+- Client setup and configuration examples
+- Wallet address operations (get info, fetch keys)
+- Incoming payment workflows (create, retrieve, list, complete)
+- Quote creation with send/receive amounts
+- Outgoing payment creation and monitoring
+- Complete end-to-end payment flow
+- Error handling patterns
+- Async operation handling
+- Pagination examples
+- Best practices
+
+**Key Examples**:
+- Basic and advanced client configuration
+- Creating incoming payments with amounts and metadata
+- Quote creation for currency exchange
+- Complete payment flow from Alice to Bob
+- Error handling with CompletableFuture
+- Timeout handling
+- Service-specific exception handling
+
+**Use this when**: Looking for copy-paste examples or implementing specific features
+
+---
+
 ### [API Coverage & Endpoint Mapping](API_COVERAGE.md)
 **Answers**: "Does the SDK support X operation?"
 
@@ -265,11 +295,12 @@ This index helps you find the right document for your needs. Each document has a
 1. **[Project Overview & Quick Start](../README.md)** - Start here
 2. **[Build Configuration & Developer Guide](BUILD.md)** - Set up and build the project
 3. **[SDK Structure & Package Organization](SDK_STRUCTURE.md)** - Understand code organization
-4. **[Quick Reference & Usage Examples](QUICK_REFERENCE.md)** - See SDK in action
-5. **[Architecture Guide](ARCHITECTURE.md)** - Understand runtime behavior
-6. **[Architecture Decision Records](ADR.md)** - Learn why decisions were made
-7. **[Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md)** - Learn coding patterns
-8. **[Contributing Guidelines](../CONTRIBUTING.md)** - Start contributing
+4. **[Code Snippets & Complete Examples](CODE_SNIPPETS.md)** - See working code examples
+5. **[Quick Reference & Usage Examples](QUICK_REFERENCE.md)** - See SDK in action
+6. **[Architecture Guide](ARCHITECTURE.md)** - Understand runtime behavior
+7. **[Architecture Decision Records](ADR.md)** - Learn why decisions were made
+8. **[Java 25 Features & Modern Patterns](JAVA_25_FEATURES.md)** - Learn coding patterns
+9. **[Contributing Guidelines](../CONTRIBUTING.md)** - Start contributing
 
 ## Document Ownership
 
@@ -280,10 +311,11 @@ Each document answers a specific question type:
 - **SDK_STRUCTURE**: Where questions (packages, files, organization)
 - **JAVA_25_FEATURES**: What questions (features, syntax, patterns)
 - **QUICK_REFERENCE**: Usage questions (how to use, examples)
+- **CODE_SNIPPETS**: Working code examples (copy-paste ready)
 - **API_COVERAGE**: Coverage questions (what's supported, mapping)
 
 ---
 
-**Last Updated**: 2025-10-07
-**Document Count**: 11 markdown files
+**Last Updated**: 2025-10-16
+**Document Count**: 12 markdown files
 **Total Overlap**: Minimal (cross-references only)
