@@ -55,6 +55,9 @@ import zm.hashcode.openpayments.auth.exception.SignatureException;
  */
 public record ClientKey(String keyId, PrivateKey privateKey, PublicKey publicKey) {
 
+    private static final String ALGORITHM_ED25519 = "Ed25519";
+    private static final String ALGORITHM_EDDSA = "EdDSA";
+
     /**
      * Compact constructor with validation.
      *
@@ -73,15 +76,13 @@ public record ClientKey(String keyId, PrivateKey privateKey, PublicKey publicKey
         }
 
         // Validate key algorithms
-        String privateAlg = privateKey.getAlgorithm();
-        String publicAlg = publicKey.getAlgorithm();
-
-        if (!"Ed25519".equals(privateAlg) && !"EdDSA".equals(privateAlg)) {
-            throw new IllegalArgumentException("Private key must be Ed25519, got: " + privateAlg);
+        if (!ALGORITHM_ED25519.equals(privateKey.getAlgorithm())
+                && !ALGORITHM_EDDSA.equals(privateKey.getAlgorithm())) {
+            throw new IllegalArgumentException("Private key must be Ed25519, got: " + privateKey.getAlgorithm());
         }
 
-        if (!"Ed25519".equals(publicAlg) && !"EdDSA".equals(publicAlg)) {
-            throw new IllegalArgumentException("Public key must be Ed25519, got: " + publicAlg);
+        if (!ALGORITHM_ED25519.equals(publicKey.getAlgorithm()) && !ALGORITHM_EDDSA.equals(publicKey.getAlgorithm())) {
+            throw new IllegalArgumentException("Public key must be Ed25519, got: " + publicKey.getAlgorithm());
         }
     }
 
@@ -115,7 +116,7 @@ public record ClientKey(String keyId, PrivateKey privateKey, PublicKey publicKey
         Objects.requireNonNull(data, "data must not be null");
 
         try {
-            Signature signature = Signature.getInstance("Ed25519");
+            Signature signature = Signature.getInstance(ALGORITHM_ED25519);
             signature.initSign(privateKey);
             signature.update(data);
             return signature.sign();
@@ -149,7 +150,7 @@ public record ClientKey(String keyId, PrivateKey privateKey, PublicKey publicKey
         Objects.requireNonNull(signatureBytes, "signatureBytes must not be null");
 
         try {
-            Signature signature = Signature.getInstance("Ed25519");
+            Signature signature = Signature.getInstance(ALGORITHM_ED25519);
             signature.initVerify(publicKey);
             signature.update(data);
             return signature.verify(signatureBytes);

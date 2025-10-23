@@ -219,7 +219,7 @@ public final class SignatureComponents {
         public Builder addHeader(String name, String value) {
             Objects.requireNonNull(name, "name must not be null");
             Objects.requireNonNull(value, "value must not be null");
-            this.headers.put(name.toLowerCase(), value); // Normalize to lowercase
+            this.headers.put(name.toLowerCase(java.util.Locale.ROOT), value); // Normalize to lowercase
             return this;
         }
 

@@ -9,6 +9,8 @@ package zm.hashcode.openpayments.model;
  */
 public class OpenPaymentsException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     private final int statusCode;
     private final String errorCode;
 

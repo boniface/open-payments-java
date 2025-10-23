@@ -289,7 +289,7 @@ public final class ClientKeyGenerator {
      */
     private static byte[] wrapPublicKeyX509(byte[] rawPublicKey) {
         // X.509 header for Ed25519 public key
-        byte[] header = new byte[]{0x30, 0x2a, // SEQUENCE (42 bytes)
+        byte[] header = {0x30, 0x2a, // SEQUENCE (42 bytes)
                 0x30, 0x05, // SEQUENCE (5 bytes) - algorithm
                 0x06, 0x03, 0x2b, 0x65, 0x70, // OID 1.3.101.112 (Ed25519)
                 0x03, 0x21, // BIT STRING (33 bytes)
