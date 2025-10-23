@@ -356,7 +356,7 @@ All completed phases meet the following quality standards:
 - **HTTP**: Apache HttpClient 5 (abstracted, multiple implementations)
 - **JSON**: Jackson with Jdk8Module (for Optional support) and JSR310 (for Java Time)
 - **Crypto**: Ed25519 (Java standard library KeyPairGenerator)
-- **Testing**: JUnit 5, Mockito, AssertJ
+- **Testing**: JUnit 6, Mockito, AssertJ
 - **Quality**: PMD, Checkstyle, SpotBugs, Spotless
 
 ---

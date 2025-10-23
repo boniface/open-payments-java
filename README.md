@@ -41,7 +41,7 @@ graph TD
         Auth ~~~ Note
         Resource ~~~ Note
 
-        Note["Operated by Account Service Entity (ASE)<br/> (Bank, Wallet Provider, Payment Processor)"]
+        Note["Operated by Account Service Entity (ASE) (Bank, Wallet Provider, Payment Processor)"]
     end
 
     App -->|HTTP Request via SDK| SDK

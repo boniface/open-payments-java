@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 📦 **Maven Central Publishing Setup**
   - Automated CI/CD publishing via GitHub Actions
-  - Central Portal integration (new standard, not legacy OSSRH)
+  - Central Portal integration
   - Comprehensive release guide (RELEASE_GUIDE.md)
   - GPG artifact signing configuration
   - Automated GitHub Release creation
@@ -22,22 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Changed from `1.0.0-SNAPSHOT` to `0.1.0` (pre-1.0 development)
   - Adopted semantic versioning with 0.x.y for initial development
   - Configured for release-only versions (no SNAPSHOT support)
-  - Updated all documentation and examples to use `0.1.0`
 
 - 🔧 **Publishing Configuration**
   - Fixed Maven Central Portal URL to `https://central.sonatype.com`
   - Updated to token-based authentication (Central Portal tokens)
   - Removed legacy OSSRH references and configurations
   - Removed duplicate version declarations in build files
-  - Simplified publishing workflow (releases only, no snapshots)
+  - Simplified publishing workflow 
 
 - 📝 **Documentation**
-  - Consolidated 3 publishing docs into single comprehensive RELEASE_GUIDE.md
+  - Added publishing docs into single comprehensive RELEASE_GUIDE.md
   - Updated CI_CD_SETUP.md to reflect Central Portal approach
   - Updated GITHUB_ACTIONS_SETUP.md with correct secret names
-  - Removed all OSSRH migration notes (fresh library approach)
-  - Added namespace verification status (zm.hashcode already verified)
-  - Clarified that Central Portal doesn't support SNAPSHOT deployments
 
 - ⚙️ **CI/CD Workflow**
   - Updated release.yml for Central Portal authentication
@@ -51,8 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Removed all SNAPSHOT version references from codebase
   - Removed OSSRH (legacy Sonatype) documentation and references
   - Removed duplicate/redundant publishing documentation files
-  - Removed old `s01.oss.sonatype.org` endpoint references
-  - Removed confusing migration notes (not applicable to new library)
+  - Removed old sunset `s01.oss.sonatype.org` endpoint references
 
 ## [0.1.0] - Initial Development
 
@@ -199,6 +194,7 @@ Not applicable for initial release.
 ## Contributors
 
 - Boniface Kabaso - Initial implementation
+- Espoir Diteekemena - Initial implementation and Documentation
 
 ## References
 

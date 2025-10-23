@@ -14,11 +14,24 @@ This document provides a detailed breakdown of the package structure and file or
 zm.hashcode.openpayments/
 ├── client/                       # Main client API
 ├── auth/                         # Authentication & Authorization (GNAP)
+│   ├── exception/                # Auth-specific exceptions
+│   ├── grant/                    # GNAP grant protocol
+│   ├── keys/                     # Client key management
+│   ├── signature/                # HTTP message signatures
+│   └── token/                    # Token management
 ├── wallet/                       # Wallet Address operations
 ├── payment/                      # Payment operations
 │   ├── incoming/                 # Incoming payments
 │   ├── outgoing/                 # Outgoing payments
 │   └── quote/                    # Payment quotes
+├── http/                         # HTTP abstraction layer
+│   ├── config/                   # HTTP client configuration
+│   ├── core/                     # Core HTTP interfaces
+│   ├── factory/                  # HTTP client factory
+│   ├── impl/                     # HTTP client implementations
+│   ├── interceptor/              # Request/response interceptors
+│   └── resilience/               # Retry and resilience
+├── util/                         # Cross-cutting utilities
 └── model/                        # Shared models and exceptions
 ```
 

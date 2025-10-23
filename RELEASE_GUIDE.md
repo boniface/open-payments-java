@@ -22,10 +22,10 @@ Complete guide for publishing `open-payments-java` to Maven Central using automa
 This project is configured to publish to Maven Central via the **Central Portal** API:
 
 - **Publishing Endpoint:** `https://central.sonatype.com`
-- **Namespace:** `zm.hashcode` (already verified ✓)
+- **Namespace:** `zm.hashcode` 
 - **Artifact:** `open-payments-java`
 - **Group ID:** `zm.hashcode`
-- **Authentication:** Token-based (no username/password)
+- **Authentication:** Token-based 
 - **Current Version:** `0.1.0` (pre-1.0 development)
 
 **Publication Methods:**
@@ -74,7 +74,7 @@ We follow [Semantic Versioning 2.0.0](https://semver.org/) with a **pre-1.0.0 de
 
 **Register at:** https://central.sonatype.com
 
-- Sign up with your GitHub account (recommended)
+- Sign up with your GitHub account 
 - Verify your email address
 - **Note:** The `zm.hashcode` namespace is already verified and ready to use ✓
 
@@ -82,7 +82,7 @@ We follow [Semantic Versioning 2.0.0](https://semver.org/) with a **pre-1.0.0 de
 
 1. Go to https://central.sonatype.com/account
 2. Click "**Generate User Token**"
-3. Copy both the **username** and **password** (you'll need these later)
+3. Copy both the **username** and **password** 
 
 ### 3. GPG Signing Setup
 
@@ -95,8 +95,8 @@ All artifacts published to Maven Central must be cryptographically signed with G
 gpg --gen-key
 
 # Follow prompts:
-# - Real name: Boniface Kabaso
-# - Email: 550236+boniface@users.noreply.github.com
+# - Real name: 
+# - Email: 
 # - Passphrase: (choose a strong password - save it!)
 ```
 
@@ -108,8 +108,8 @@ gpg --list-keys
 
 # Example output:
 # pub   rsa3072 2025-01-15 [SC] [expires: 2027-01-15]
-#       ABCD1234EFGH5678IJKL9012MNOP3456QRST7890  ← This is your KEY_ID
-# uid   [ultimate] Boniface Kabaso <550236+boniface@users.noreply.github.com>
+#       ABCD1234EFGH5678IJKL9012MNOP3456QRST7890  ← This is the KEY_ID
+# uid   [ultimate] FULL NAME <email address>
 
 # The KEY_ID is the full 40-character fingerprint
 # The SIGNING_KEY_ID is the last 8 characters (e.g., QRST7890)
@@ -164,7 +164,7 @@ Create/edit `~/.gradle/gradle.properties`:
 # GPG Signing
 signing.keyId=QRST7890
 signing.password=your-gpg-passphrase
-signing.secretKeyRingFile=/Users/yourusername/.gnupg/secring.gpg
+signing.secretKeyRingFile=/[HOME DIRECTORY]/.gnupg/secring.gpg
 
 # Central Portal Authentication
 centralPortalUsername=your-token-username
@@ -186,10 +186,6 @@ gpg --export-secret-keys > ~/.gnupg/secring.gpg
 
 Push a git tag → GitHub Actions automatically publishes to Maven Central.
 
-**Timeline:**
-- GitHub Actions workflow: ~5-10 minutes
-- Maven Central sync: ~15-30 minutes
-- **Total:** ~30-40 minutes until publicly available
 
 ### Step 1: Update Version
 
@@ -514,8 +510,8 @@ The release workflow (`.github/workflows/release.yml`) is triggered when you pus
 - [ ] Created git tag: `git tag -a vX.Y.Z -m "Release version X.Y.Z"`
 - [ ] Pushed to remote: `git push origin branch && git push origin vX.Y.Z`
 - [ ] GitHub Actions workflow succeeded
-- [ ] Verified on Central Portal (after ~10 min)
-- [ ] Verified on Maven Central (after ~30 min)
+- [ ] Verified on Central Portal 
+- [ ] Verified on Maven Central 
 - [ ] Tested installation in sample project
 - [ ] Version bumped to next development version
 
