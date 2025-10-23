@@ -46,19 +46,20 @@ This project uses automated code quality tools to enforce best practices, style 
   - Method length limit (150 lines)
   - Parameter count limit (7 parameters)
 
-### 2. PMD (Currently Disabled for Java 25)
-- **Version**: 7.8.0
+### 2. PMD
+- **Version**: 7.17.0
 - **Purpose**: Source code analyzer to find common programming flaws
 - **Runs**: After compilation
 - **Configuration**: `config/pmd/ruleset.xml`
-- **Note**: Disabled due to Java 25 compatibility issues. Will be enabled when PMD adds full Java 25 support.
+- **Status**: ✅ Enabled - Java 25 support since v7.17.0
+- **Enforcement**: Main code enforced (62 violations, limit 75), test code warnings only
 
-### 3. SpotBugs (Currently Disabled for Java 25)
-- **Version**: 4.8.6
+### 3. SpotBugs
+- **Version**: 4.9.6
 - **Purpose**: Static analysis tool to find bugs in Java code
 - **Runs**: After compilation
 - **Configuration**: `config/spotbugs/excludeFilter.xml`
-- **Note**: Disabled due to Java 25 compatibility issues. SpotBugs currently supports up to Java 21.
+- **Status**: ✅ Enabled - Java 25 compatible, currently in warning mode
 
 ## Running Quality Checks
 
@@ -86,16 +87,16 @@ This is all you need! Formatting and quality checks happen automatically:
 
 # Run specific checks
 ./gradlew checkstyleMain checkstyleTest
-./gradlew pmdMain pmdTest  # (when enabled)
-./gradlew spotbugsMain spotbugsTest  # (when enabled)
+./gradlew pmdMain pmdTest
+./gradlew spotbugsMain spotbugsTest
 ```
 
 ### Execution Order
 1. **spotlessApply** → Formats code automatically
 2. **compileJava** → Compiles the formatted code
 3. **checkstyleMain** → Verifies code style (after formatting)
-4. **pmdMain** → Static analysis (when enabled)
-5. **spotbugsMain** → Bug detection (when enabled)
+4. **pmdMain** → Static analysis
+5. **spotbugsMain** → Bug detection
 
 ## Reports
 
@@ -121,19 +122,17 @@ Edit `config/spotbugs/excludeFilter.xml` to exclude specific bug patterns or fil
 
 These quality checks are configured to fail the build if violations are found, making them suitable for CI/CD pipelines:
 - Checkstyle: `maxWarnings = 0`, `isIgnoreFailures = false`
-- PMD: `isIgnoreFailures = false` (when enabled)
-- SpotBugs: `ignoreFailures = false` (when enabled)
+- PMD: `isIgnoreFailures = false` (main code), `ignoreFailures = true` (test code)
+- SpotBugs: `ignoreFailures = true` (warning mode)
 
 ## Java 25 Compatibility Note
 
-Currently using Java 25, which has limited tool support:
+Currently using Java 25 with full tool support:
 - ✅ **Checkstyle**: Fully functional (source code analysis)
-- ⏸️ **PMD**: Disabled (waiting for Java 25 support)
-- ⏸️ **SpotBugs**: Disabled (supports up to Java 21)
+- ✅ **PMD**: Enabled (v7.17.0+ supports Java 25)
+- ✅ **SpotBugs**: Enabled (v4.9.6 is Java 25 compatible)
 
-To enable PMD and SpotBugs, either:
-1. Wait for tool updates that support Java 25, or
-2. Target Java 21 by changing `languageVersion` and `release` in `build.gradle.kts`
+All quality tools are now fully operational with Java 25.
 
 ## Best Practices
 

@@ -107,11 +107,8 @@
  * HttpClient client = HttpClientBuilder.simple("https://api.example.com");
  *
  * // Make a request
- * var request = HttpRequest.builder()
- *     .method(HttpMethod.GET)
- *     .uri("/users/123")
- *     .header("Accept", "application/json")
- *     .build();
+ * var request = HttpRequest.builder().method(HttpMethod.GET).uri("/users/123").header("Accept", "application/json")
+ *         .build();
  *
  * // Execute
  * HttpResponse response = client.execute(request).join();
@@ -124,15 +121,10 @@
  * import zm.hashcode.openpayments.http.config.HttpClientImplementation;
  * import zm.hashcode.openpayments.http.resilience.RetryStrategy;
  *
- * HttpClient client = HttpClientBuilder.create()
- *     .baseUrl("https://api.example.com")
- *     .implementation(HttpClientImplementation.APACHE)
- *     .connectTimeout(Duration.ofSeconds(10))
- *     .requestTimeout(Duration.ofSeconds(30))
- *     .maxRetries(3)
- *     .retryStrategy(RetryStrategy.exponentialBackoff(Duration.ofMillis(100)))
- *     .circuitBreakerEnabled(true)
- *     .build();
+ * HttpClient client = HttpClientBuilder.create().baseUrl("https://api.example.com")
+ *         .implementation(HttpClientImplementation.APACHE).connectTimeout(Duration.ofSeconds(10))
+ *         .requestTimeout(Duration.ofSeconds(30)).maxRetries(3)
+ *         .retryStrategy(RetryStrategy.exponentialBackoff(Duration.ofMillis(100))).circuitBreakerEnabled(true).build();
  * }</pre>
  *
  * <h3>Multiple Implementations</h3>
@@ -142,18 +134,12 @@
  * import zm.hashcode.openpayments.http.config.HttpClientImplementation;
  *
  * // Fast internal service - OkHttp
- * HttpClient internal = HttpClientBuilder.create()
- *     .baseUrl("http://internal-api:8080")
- *     .implementation(HttpClientImplementation.OKHTTP)
- *     .maxRetries(1)
- *     .build();
+ * HttpClient internal = HttpClientBuilder.create().baseUrl("http://internal-api:8080")
+ *         .implementation(HttpClientImplementation.OKHTTP).maxRetries(1).build();
  *
  * // Slow external service - Apache with aggressive retries
- * HttpClient external = HttpClientBuilder.create()
- *     .baseUrl("https://external-api.com")
- *     .implementation(HttpClientImplementation.APACHE)
- *     .maxRetries(5)
- *     .build();
+ * HttpClient external = HttpClientBuilder.create().baseUrl("https://external-api.com")
+ *         .implementation(HttpClientImplementation.APACHE).maxRetries(5).build();
  * }</pre>
  *
  * <h3>Factory Pattern</h3>
