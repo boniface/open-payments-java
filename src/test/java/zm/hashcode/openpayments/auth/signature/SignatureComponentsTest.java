@@ -2,449 +2,373 @@ package zm.hashcode.openpayments.auth.signature;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Unit tests for {@link SignatureComponents}.
  */
+@DisplayName("SignatureComponents")
 class SignatureComponentsTest {
 
-    // ========================================
-    // Construction Tests
-    // ========================================
+    private static final String BASE_URI = "https://example.com";
 
-    @Test
-    void shouldBuildWithRequiredFields() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com/grant").build();
+    @Nested
+    @DisplayName("Construction")
+    class ConstructionTests {
 
-        assertThat(components.getMethod()).isEqualTo("POST");
-        assertThat(components.getTargetUri()).isEqualTo("https://example.com/grant");
-        assertThat(components.getHeaders()).isEmpty();
-        assertThat(components.hasBody()).isFalse();
+        @Test
+        @DisplayName("should build with required fields")
+        void shouldBuildWithRequiredFields() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI + "/grant").build();
+
+            assertThat(components.getMethod()).isEqualTo("POST");
+            assertThat(components.getTargetUri()).isEqualTo(BASE_URI + "/grant");
+            assertThat(components.getHeaders()).isEmpty();
+            assertThat(components.hasBody()).isFalse();
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"", "   "})
+        @DisplayName("should throw when method is blank")
+        void shouldThrowWhenMethodIsBlank(String method) {
+            var builder = SignatureComponents.builder().method(method).targetUri(BASE_URI);
+
+            assertThatThrownBy(builder::build).isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("method must not be blank");
+        }
+
+        @Test
+        @DisplayName("should throw when method is null")
+        void shouldThrowWhenMethodIsNull() {
+            var builder = SignatureComponents.builder().targetUri(BASE_URI);
+
+            assertThatThrownBy(builder::build).isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("method must not be null");
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"   "})
+        @DisplayName("should throw when targetUri is blank")
+        void shouldThrowWhenTargetUriIsBlank(String uri) {
+            var builder = SignatureComponents.builder().method("GET").targetUri(uri);
+
+            assertThatThrownBy(builder::build).isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("targetUri must not be blank");
+        }
+
+        @Test
+        @DisplayName("should throw when targetUri is null")
+        void shouldThrowWhenTargetUriIsNull() {
+            var builder = SignatureComponents.builder().method("GET");
+
+            assertThatThrownBy(builder::build).isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("targetUri must not be null");
+        }
     }
 
-    @Test
-    void shouldThrowWhenMethodIsNull() {
-        var builder = SignatureComponents.builder().targetUri("https://example.com");
+    @Nested
+    @DisplayName("Header Management")
+    class HeaderManagementTests {
 
-        assertThatThrownBy(() -> builder.build()).isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("method must not be null");
+        @Test
+        @DisplayName("should add and retrieve headers")
+        void shouldAddAndRetrieveHeaders() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI)
+                    .addHeader("content-type", "application/json").addHeader("content-length", "123").build();
+
+            assertThat(components.getHeader("content-type")).contains("application/json");
+            assertThat(components.getHeader("content-length")).contains("123");
+            assertThat(components.getHeaders()).hasSize(2);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"content-type", "Content-Type", "CONTENT-TYPE"})
+        @DisplayName("should handle case-insensitive headers")
+        void shouldHandleCaseInsensitiveHeaders(String headerName) {
+            var components = SignatureComponents.builder().method("GET").targetUri(BASE_URI)
+                    .addHeader("Content-Type", "application/json").build();
+
+            assertThat(components.getHeader(headerName)).contains("application/json");
+        }
+
+        @Test
+        @DisplayName("should add multiple headers at once")
+        void shouldAddMultipleHeadersAtOnce() {
+            Map<String, String> headers = Map.of("content-type", "application/json", "content-length", "123",
+                    "authorization", "GNAP token-value");
+
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI).headers(headers).build();
+
+            assertThat(components.getHeaders()).hasSize(3);
+            assertThat(components.getHeader("content-type")).contains("application/json");
+        }
+
+        @Test
+        @DisplayName("should normalize header names to lowercase")
+        void shouldNormalizeHeaderNames() {
+            var components = SignatureComponents.builder().method("GET").targetUri(BASE_URI)
+                    .addHeader("Content-Type", "application/json").addHeader("AUTHORIZATION", "token").build();
+
+            Map<String, String> headers = components.getHeaders();
+            assertThat(headers).containsKey("content-type");
+            assertThat(headers).containsKey("authorization");
+        }
+
+        @Test
+        @DisplayName("should return immutable headers map")
+        void shouldReturnImmutableHeadersMap() {
+            var components = SignatureComponents.builder().method("GET").targetUri(BASE_URI).addHeader("test", "value")
+                    .build();
+
+            assertThatThrownBy(() -> components.getHeaders().put("new", "value"))
+                    .isInstanceOf(UnsupportedOperationException.class);
+        }
+
+        @ParameterizedTest
+        @MethodSource("nullHeaderProvider")
+        @DisplayName("should throw when adding null header")
+        void shouldThrowWhenAddingNullHeader(String name, String value, String expectedMessage) {
+            var builder = SignatureComponents.builder().method("GET").targetUri(BASE_URI);
+
+            assertThatThrownBy(() -> builder.addHeader(name, value)).isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining(expectedMessage);
+        }
+
+        static Stream<Arguments> nullHeaderProvider() {
+            return Stream.of(Arguments.of(null, "value", "name must not be null"),
+                    Arguments.of("content-type", null, "value must not be null"));
+        }
+
+        @Test
+        @DisplayName("should handle headers with special characters")
+        void shouldHandleHeadersWithSpecialCharacters() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI)
+                    .addHeader("content-type", "application/json; charset=utf-8")
+                    .addHeader("custom-header", "value with spaces").build();
+
+            assertThat(components.getHeader("content-type")).contains("application/json; charset=utf-8");
+            assertThat(components.getHeader("custom-header")).contains("value with spaces");
+        }
     }
 
-    @Test
-    void shouldThrowWhenMethodIsBlank() {
-        var builder = SignatureComponents.builder().method("").targetUri("https://example.com");
+    @Nested
+    @DisplayName("Body Management")
+    class BodyManagementTests {
 
-        assertThatThrownBy(() -> builder.build()).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("method must not be blank");
+        @Test
+        @DisplayName("should handle body presence")
+        void shouldHandleBodyPresence() {
+            var withBody = SignatureComponents.builder().method("POST").targetUri(BASE_URI).body("{\"test\":\"value\"}")
+                    .build();
+
+            assertThat(withBody.hasBody()).isTrue();
+            assertThat(withBody.getBody()).contains("{\"test\":\"value\"}");
+        }
+
+        @Test
+        @DisplayName("should handle null body")
+        void shouldHandleNullBody() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI).body(null).build();
+
+            assertThat(components.hasBody()).isFalse();
+            assertThat(components.getBody()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should handle empty string body")
+        void shouldHandleEmptyStringBody() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI).body("").build();
+
+            assertThat(components.hasBody()).isTrue();
+            assertThat(components.getBody()).contains("");
+        }
+
+        @ParameterizedTest
+        @MethodSource("bodyVariationsProvider")
+        @DisplayName("should handle various body types")
+        void shouldHandleVariousBodyTypes(String body) {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI).body(body).build();
+
+            assertThat(components.hasBody()).isTrue();
+            assertThat(components.getBody()).contains(body);
+        }
+
+        static Stream<Arguments> bodyVariationsProvider() {
+            return Stream.of(Arguments.of("x".repeat(10000)), // Large body
+                    Arguments.of("{\n  \"key\": \"value\"\n}"), // Newlines
+                    Arguments.of("{\"message\":\"Hello 世界 🌍\"}") // Unicode
+            );
+        }
     }
 
-    @Test
-    void shouldThrowWhenMethodIsWhitespace() {
-        var builder = SignatureComponents.builder().method("   ").targetUri("https://example.com");
+    @Nested
+    @DisplayName("Component Identifiers")
+    class ComponentIdentifierTests {
 
-        assertThatThrownBy(() -> builder.build()).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("method must not be blank");
+        @Test
+        @DisplayName("should include method and target URI by default")
+        void shouldIncludeMethodAndTargetUriByDefault() {
+            var components = SignatureComponents.builder().method("GET").targetUri(BASE_URI).build();
+
+            assertThat(components.getComponentIdentifiers()).hasSize(2).containsExactly("@method", "@target-uri");
+        }
+
+        @Test
+        @DisplayName("should include authorization when present")
+        void shouldIncludeAuthorizationWhenPresent() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI)
+                    .addHeader("authorization", "GNAP token").build();
+
+            assertThat(components.getComponentIdentifiers()).contains("authorization").startsWith("@method",
+                    "@target-uri", "authorization");
+        }
+
+        @Test
+        @DisplayName("should include content-digest only when body present")
+        void shouldIncludeContentDigestOnlyWithBody() {
+            var withBody = SignatureComponents.builder().method("POST").targetUri(BASE_URI)
+                    .addHeader("content-digest", "sha-256=:abc:=").body("{}").build();
+
+            assertThat(withBody.getComponentIdentifiers()).contains("content-digest");
+
+            var withoutBody = SignatureComponents.builder().method("POST").targetUri(BASE_URI)
+                    .addHeader("content-digest", "sha-256=:abc:=").build();
+
+            assertThat(withoutBody.getComponentIdentifiers()).doesNotContain("content-digest");
+        }
+
+        @Test
+        @DisplayName("should follow Open Payments ordering")
+        void shouldFollowOpenPaymentsOrdering() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI + "/grant")
+                    .addHeader("content-type", "application/json").addHeader("content-length", "123")
+                    .addHeader("authorization", "GNAP token").addHeader("content-digest", "sha-256=:abc:=").body("{}")
+                    .build();
+
+            assertThat(components.getComponentIdentifiers()).containsExactly("@method", "@target-uri", "authorization",
+                    "content-digest", "content-type", "content-length");
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"content-type", "content-length"})
+        @DisplayName("should include optional headers when present")
+        void shouldIncludeOptionalHeadersWhenPresent(String headerName) {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI)
+                    .addHeader(headerName, "value").build();
+
+            assertThat(components.getComponentIdentifiers()).contains(headerName);
+        }
     }
 
-    @Test
-    void shouldThrowWhenTargetUriIsNull() {
-        var builder = SignatureComponents.builder().method("GET");
-
-        assertThatThrownBy(() -> builder.build()).isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("targetUri must not be null");
-    }
-
-    @Test
-    void shouldThrowWhenTargetUriIsBlank() {
-        var builder = SignatureComponents.builder().method("GET").targetUri("   ");
-
-        assertThatThrownBy(() -> builder.build()).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("targetUri must not be blank");
-    }
-
-    // ========================================
-    // Header Management Tests
-    // ========================================
-
-    @Test
-    void shouldAddAndRetrieveHeaders() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-type", "application/json").addHeader("content-length", "123").build();
-
-        assertThat(components.getHeader("content-type")).contains("application/json");
-        assertThat(components.getHeader("content-length")).contains("123");
-        assertThat(components.getHeaders()).hasSize(2);
-    }
-
-    @Test
-    void shouldHandleCaseInsensitiveHeaders() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com")
-                .addHeader("Content-Type", "application/json").build();
-
-        // RFC 9421: header names are case-insensitive
-        assertThat(components.getHeader("content-type")).contains("application/json");
-        assertThat(components.getHeader("CONTENT-TYPE")).contains("application/json");
-        assertThat(components.getHeader("Content-Type")).contains("application/json");
-    }
-
-    @Test
-    void shouldReturnEmptyForMissingHeader() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com").build();
-
-        assertThat(components.getHeader("authorization")).isEmpty();
-        assertThat(components.getHeader("content-type")).isEmpty();
-    }
-
-    @Test
-    void shouldAddMultipleHeadersAtOnce() {
-        Map<String, String> headers = Map.of("content-type", "application/json", "content-length", "123",
-                "authorization", "GNAP token-value");
-
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com").headers(headers)
-                .build();
-
-        assertThat(components.getHeaders()).hasSize(3);
-        assertThat(components.getHeader("content-type")).contains("application/json");
-        assertThat(components.getHeader("content-length")).contains("123");
-        assertThat(components.getHeader("authorization")).contains("GNAP token-value");
-    }
-
-    @Test
-    void shouldReturnImmutableHeadersMap() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com")
-                .addHeader("test", "value").build();
-
-        assertThatThrownBy(() -> components.getHeaders().put("new", "value"))
-                .isInstanceOf(UnsupportedOperationException.class);
-    }
-
-    @Test
-    void shouldThrowWhenAddingNullHeaderName() {
-        var builder = SignatureComponents.builder().method("GET").targetUri("https://example.com");
-
-        assertThatThrownBy(() -> builder.addHeader(null, "value")).isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("name must not be null");
-    }
-
-    @Test
-    void shouldThrowWhenAddingNullHeaderValue() {
-        var builder = SignatureComponents.builder().method("GET").targetUri("https://example.com");
-
-        assertThatThrownBy(() -> builder.addHeader("content-type", null)).isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("value must not be null");
-    }
-
-    @Test
-    void shouldNormalizeHeaderNamesToLowercase() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com")
-                .addHeader("Content-Type", "application/json").addHeader("AUTHORIZATION", "token").build();
-
-        // Headers are stored in lowercase
-        Map<String, String> headers = components.getHeaders();
-        assertThat(headers).containsKey("content-type");
-        assertThat(headers).containsKey("authorization");
-    }
-
-    // ========================================
-    // Body Management Tests
-    // ========================================
-
-    @Test
-    void shouldHandleBodyPresence() {
-        var withBody = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .body("{\"test\":\"value\"}").build();
-
-        assertThat(withBody.hasBody()).isTrue();
-        assertThat(withBody.getBody()).contains("{\"test\":\"value\"}");
-
-        var withoutBody = SignatureComponents.builder().method("GET").targetUri("https://example.com").build();
-
-        assertThat(withoutBody.hasBody()).isFalse();
-        assertThat(withoutBody.getBody()).isEmpty();
-    }
-
-    @Test
-    void shouldHandleNullBody() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com").body(null)
-                .build();
-
-        assertThat(components.hasBody()).isFalse();
-        assertThat(components.getBody()).isEmpty();
-    }
-
-    @Test
-    void shouldHandleEmptyStringBody() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com").body("").build();
-
-        assertThat(components.hasBody()).isTrue();
-        assertThat(components.getBody()).contains("");
-    }
-
-    @Test
-    void shouldHandleLargeBody() {
-        String largeBody = "x".repeat(10000);
-
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com").body(largeBody)
-                .build();
-
-        assertThat(components.hasBody()).isTrue();
-        assertThat(components.getBody()).contains(largeBody);
-    }
-
-    // ========================================
-    // Component Identifier Ordering Tests
-    // ========================================
-
-    @Test
-    void shouldIncludeMethodAndTargetUriByDefault() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com").build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).hasSize(2).containsExactly("@method", "@target-uri");
-    }
-
-    @Test
-    void shouldIncludeAuthorizationWhenPresent() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("authorization", "GNAP token").build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).contains("authorization").startsWith("@method", "@target-uri", "authorization");
-    }
-
-    @Test
-    void shouldIncludeContentDigestWhenBodyPresent() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-digest", "sha-256=:abc:=").body("{}").build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).contains("content-digest");
-    }
-
-    @Test
-    void shouldNotIncludeContentDigestWithoutBody() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-digest", "sha-256=:abc:=")
-                // No body
-                .build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).doesNotContain("content-digest");
-    }
-
-    @Test
-    void shouldNotIncludeContentDigestWithoutHeader() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                // No content-digest header
-                .body("{}").build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).doesNotContain("content-digest");
-    }
-
-    @Test
-    void shouldFollowOpenPaymentsOrdering() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com/grant")
-                .addHeader("content-type", "application/json").addHeader("content-length", "123")
-                .addHeader("authorization", "GNAP token").addHeader("content-digest", "sha-256=:abc:=").body("{}")
-                .build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        // Order: @method, @target-uri, authorization, content-digest, content-type,
-        // content-length
-        assertThat(identifiers).containsExactly("@method", "@target-uri", "authorization", "content-digest",
-                "content-type", "content-length");
-    }
-
-    @Test
-    void shouldHandlePartialHeaders() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-type", "application/json")
-                // No content-length, no authorization
-                .build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).containsExactly("@method", "@target-uri", "content-type");
-    }
-
-    @Test
-    void shouldIncludeContentTypeWhenPresent() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-type", "application/json").build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).contains("content-type");
-    }
-
-    @Test
-    void shouldIncludeContentLengthWhenPresent() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-length", "123").build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).contains("content-length");
-    }
-
-    @Test
-    void shouldNotIncludeMissingOptionalHeaders() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com").build();
-
-        List<String> identifiers = components.getComponentIdentifiers();
-
-        assertThat(identifiers).doesNotContain("authorization", "content-digest", "content-type", "content-length");
-    }
-
-    // ========================================
-    // Edge Cases
-    // ========================================
-
-    @Test
-    void shouldHandleEmptyHeaders() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com").build();
-
-        assertThat(components.getHeaders()).isEmpty();
-        assertThat(components.getComponentIdentifiers()).hasSize(2);
-    }
-
-    @Test
-    void shouldHandleComplexUri() {
-        String complexUri = "https://auth.example.com:8443/grant?client_id=123&state=abc#fragment";
-
-        var components = SignatureComponents.builder().method("POST").targetUri(complexUri).build();
-
-        assertThat(components.getTargetUri()).isEqualTo(complexUri);
-    }
-
-    @Test
-    void shouldHandleUriWithSpecialCharacters() {
-        String uriWithSpecialChars = "https://example.com/path?name=Test%20User&symbol=%24";
-
-        var components = SignatureComponents.builder().method("GET").targetUri(uriWithSpecialChars).build();
-
-        assertThat(components.getTargetUri()).isEqualTo(uriWithSpecialChars);
-    }
-
-    @Test
-    void shouldHandleAllHttpMethods() {
-        String[] methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"};
-
-        for (String method : methods) {
-            var components = SignatureComponents.builder().method(method).targetUri("https://example.com").build();
+    @Nested
+    @DisplayName("Edge Cases")
+    class EdgeCaseTests {
+
+        @ParameterizedTest
+        @MethodSource("complexUriProvider")
+        @DisplayName("should handle complex URIs")
+        void shouldHandleComplexUris(String uri) {
+            var components = SignatureComponents.builder().method("GET").targetUri(uri).build();
+
+            assertThat(components.getTargetUri()).isEqualTo(uri);
+        }
+
+        static Stream<Arguments> complexUriProvider() {
+            return Stream.of(Arguments.of("https://auth.example.com:8443/grant?client_id=123&state=abc#fragment"),
+                    Arguments.of("https://example.com/path?name=Test%20User&symbol=%24"));
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"})
+        @DisplayName("should handle all HTTP methods")
+        void shouldHandleAllHttpMethods(String method) {
+            var components = SignatureComponents.builder().method(method).targetUri(BASE_URI).build();
 
             assertThat(components.getMethod()).isEqualTo(method);
         }
     }
 
-    @Test
-    void shouldHandleHeadersWithSpecialCharacters() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-type", "application/json; charset=utf-8")
-                .addHeader("custom-header", "value with spaces").build();
+    @Nested
+    @DisplayName("Builder")
+    class BuilderTests {
 
-        assertThat(components.getHeader("content-type")).contains("application/json; charset=utf-8");
-        assertThat(components.getHeader("custom-header")).contains("value with spaces");
+        @Test
+        @DisplayName("should support fluent builder")
+        void shouldSupportFluentBuilder() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI)
+                    .addHeader("content-type", "application/json").addHeader("authorization", "token").body("{}")
+                    .build();
+
+            assertThat(components).isNotNull();
+            assertThat(components.getMethod()).isEqualTo("POST");
+            assertThat(components.getHeaders()).hasSize(2);
+            assertThat(components.hasBody()).isTrue();
+        }
+
+        @Test
+        @DisplayName("should allow multiple build calls")
+        void shouldAllowMultipleBuildCalls() {
+            var builder = SignatureComponents.builder().method("GET").targetUri(BASE_URI);
+
+            var components1 = builder.build();
+            var components2 = builder.build();
+
+            assertThat(components1.getMethod()).isEqualTo(components2.getMethod());
+            assertThat(components1.getTargetUri()).isEqualTo(components2.getTargetUri());
+        }
+
+        @Test
+        @DisplayName("should throw when headers map is null")
+        void shouldThrowWhenHeadersMapIsNull() {
+            var builder = SignatureComponents.builder().method("GET").targetUri(BASE_URI);
+
+            assertThatThrownBy(() -> builder.headers(null)).isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("headers must not be null");
+        }
+
+        @Test
+        @DisplayName("should throw when getHeader name is null")
+        void shouldThrowWhenGetHeaderNameIsNull() {
+            var components = SignatureComponents.builder().method("GET").targetUri(BASE_URI).build();
+
+            assertThatThrownBy(() -> components.getHeader(null)).isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("name must not be null");
+        }
     }
 
-    @Test
-    void shouldHandleBodyWithNewlines() {
-        String bodyWithNewlines = "{\n  \"key\": \"value\"\n}";
+    @Nested
+    @DisplayName("toString")
+    class ToStringTests {
 
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .body(bodyWithNewlines).build();
+        @Test
+        @DisplayName("should have readable toString")
+        void shouldHaveReadableToString() {
+            var components = SignatureComponents.builder().method("POST").targetUri(BASE_URI + "/grant")
+                    .addHeader("content-type", "application/json").body("{}").build();
 
-        assertThat(components.getBody()).contains(bodyWithNewlines);
-    }
+            String toString = components.toString();
 
-    @Test
-    void shouldHandleBodyWithUnicodeCharacters() {
-        String unicodeBody = "{\"message\":\"Hello 世界 🌍\"}";
+            assertThat(toString).contains("SignatureComponents").contains("method='POST'")
+                    .contains("targetUri='https://example.com/grant'").contains("headers=1").contains("hasBody=true");
+        }
 
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com").body(unicodeBody)
-                .build();
+        @Test
+        @DisplayName("should show correct header count in toString")
+        void shouldShowCorrectHeaderCountInToString() {
+            var components = SignatureComponents.builder().method("GET").targetUri(BASE_URI)
+                    .addHeader("header1", "value1").addHeader("header2", "value2").addHeader("header3", "value3")
+                    .build();
 
-        assertThat(components.getBody()).contains(unicodeBody);
-    }
-
-    // ========================================
-    // toString Tests
-    // ========================================
-
-    @Test
-    void shouldHaveReadableToString() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com/grant")
-                .addHeader("content-type", "application/json").body("{}").build();
-
-        String toString = components.toString();
-
-        assertThat(toString).contains("SignatureComponents").contains("method='POST'")
-                .contains("targetUri='https://example.com/grant'").contains("headers=1").contains("hasBody=true");
-    }
-
-    @Test
-    void shouldShowCorrectHeaderCountInToString() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com")
-                .addHeader("header1", "value1").addHeader("header2", "value2").addHeader("header3", "value3").build();
-
-        String toString = components.toString();
-
-        assertThat(toString).contains("headers=3");
-    }
-
-    // ========================================
-    // Builder Tests
-    // ========================================
-
-    @Test
-    void shouldSupportFluentBuilder() {
-        var components = SignatureComponents.builder().method("POST").targetUri("https://example.com")
-                .addHeader("content-type", "application/json").addHeader("authorization", "token").body("{}").build();
-
-        assertThat(components).isNotNull();
-        assertThat(components.getMethod()).isEqualTo("POST");
-        assertThat(components.getHeaders()).hasSize(2);
-        assertThat(components.hasBody()).isTrue();
-    }
-
-    @Test
-    void shouldAllowMultipleBuildCalls() {
-        var builder = SignatureComponents.builder().method("GET").targetUri("https://example.com");
-
-        var components1 = builder.build();
-        var components2 = builder.build();
-
-        assertThat(components1).isNotNull();
-        assertThat(components2).isNotNull();
-        // Both should be equal since builder state hasn't changed
-        assertThat(components1.getMethod()).isEqualTo(components2.getMethod());
-        assertThat(components1.getTargetUri()).isEqualTo(components2.getTargetUri());
-    }
-
-    @Test
-    void shouldThrowWhenHeadersMapIsNull() {
-        var builder = SignatureComponents.builder().method("GET").targetUri("https://example.com");
-
-        assertThatThrownBy(() -> builder.headers(null)).isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("headers must not be null");
-    }
-
-    @Test
-    void shouldThrowWhenGetHeaderNameIsNull() {
-        var components = SignatureComponents.builder().method("GET").targetUri("https://example.com").build();
-
-        assertThatThrownBy(() -> components.getHeader(null)).isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("name must not be null");
+            assertThat(components.toString()).contains("headers=3");
+        }
     }
 }
