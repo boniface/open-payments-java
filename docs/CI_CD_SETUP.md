@@ -8,7 +8,7 @@ This document describes the CI/CD pipeline configuration for the Open Payments J
 
 ## Overview
 
-The project uses GitHub Actions for continuous integration, quality checks, and automated releases to Maven Central.
+The project uses GitHub Actions for continuous integration, quality checks, and automated releases to Maven Central via the **Central Portal**.
 
 ## Workflows
 
@@ -39,13 +39,13 @@ Runs on every push and pull request to `main` and `develop` branches.
 
 ### 2. Release Workflow (`.github/workflows/release.yml`)
 
-Triggers when a version tag is pushed (e.g., `v1.0.0`).
+Triggers when a version tag is pushed (e.g., `v0.1.0`).
 
 #### Steps
 1. **Validation** - Gradle wrapper validation
 2. **Quality Gates** - All CI checks must pass
 3. **Build & Sign** - Artifacts signed with GPG
-4. **Publish to Maven Central** - Via Sonatype OSSRH
+4. **Publish to Maven Central** - Via Central Portal
 5. **GitHub Release** - Create release with artifacts
 6. **JavaDoc Deployment** - Publish to GitHub Pages
 7. **Verification** - Confirm artifact availability on Maven Central
@@ -64,10 +64,11 @@ Analyzes code for security vulnerabilities and quality issues.
 Configure these secrets in your GitHub repository settings:
 
 ### Maven Central Publishing
-- `SONATYPE_USERNAME` - Sonatype JIRA username
-- `SONATYPE_PASSWORD` - Sonatype JIRA password
-- `GPG_PRIVATE_KEY` - Base64 encoded GPG private key
+- `CENTRAL_PORTAL_USERNAME` - Central Portal token username
+- `CENTRAL_PORTAL_PASSWORD` - Central Portal token password
+- `GPG_PRIVATE_KEY` - ASCII armored GPG private key
 - `GPG_PASSPHRASE` - GPG key passphrase
+- `SIGNING_KEY_ID` - Last 8 characters of GPG key ID
 
 ### Code Coverage
 - `CODECOV_TOKEN` - Codecov.io token for coverage reports
@@ -136,12 +137,17 @@ open build/reports/jacoco/test/html/index.html
 
 ### Prerequisites
 
-1. **Sonatype JIRA Account**
-   - Create account at https://issues.sonatype.org
-   - Request new project (OSSRH ticket)
-   - Wait for approval (~2 business days)
+1. **Central Portal Account**
+   - Register at https://central.sonatype.com
+   - Sign up with GitHub (recommended)
+   - **Note:** The `zm.hashcode` namespace is already verified
 
-2. **GPG Key for Signing**
+2. **Central Portal Token**
+   - Go to https://central.sonatype.com/account
+   - Click "Generate User Token"
+   - Save username and password as GitHub secrets
+
+3. **GPG Key for Signing**
    ```bash
    # Generate GPG key
    gpg --gen-key
@@ -149,49 +155,50 @@ open build/reports/jacoco/test/html/index.html
    # List keys
    gpg --list-keys
 
-   # Export private key (base64)
-   gpg --export-secret-keys YOUR_KEY_ID | base64
+   # Export private key (ASCII armored)
+   gpg --export-secret-keys --armor YOUR_KEY_ID
 
-   # Export public key to keyserver
+   # Export public key to keyservers
+   gpg --keyserver keys.openpgp.org --send-keys YOUR_KEY_ID
    gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID
    ```
 
-3. **GitHub Secrets Configuration**
+4. **GitHub Secrets Configuration**
    - Add all required secrets to repository
-   - Test with a snapshot release first
+   - See [RELEASE_GUIDE.md](../RELEASE_GUIDE.md) for detailed setup
 
 ### Release Process
 
 1. **Prepare Release**
    ```bash
-   # Update version in build.gradle.kts
-   version = "1.0.0"
+   # Update version in gradle.properties
+   version=0.1.0
 
    # Commit version change
-   git add build.gradle.kts
-   git commit -m "chore: prepare release 1.0.0"
+   git add gradle.properties
+   git commit -m "Release version 0.1.0"
    git push
    ```
 
 2. **Create Release Tag**
    ```bash
    # Create and push tag
-   git tag -a v1.0.0 -m "Release version 1.0.0"
-   git push origin v1.0.0
+   git tag -a v0.1.0 -m "Release version 0.1.0"
+   git push origin v0.1.0
    ```
 
 3. **Monitor Workflow**
    - Watch GitHub Actions for progress
    - Release workflow publishes to Maven Central
-   - Verify artifact on https://repo1.maven.org/maven2/
+   - Verify artifact on https://central.sonatype.com/artifact/zm.hashcode/open-payments-java
 
 4. **Post-Release**
    ```bash
-   # Update to next snapshot version
-   version = "1.1.0-SNAPSHOT"
+   # Update to next version
+   version=0.2.0
 
-   git add build.gradle.kts
-   git commit -m "chore: prepare for next development iteration"
+   git add gradle.properties
+   git commit -m "Bump version to 0.2.0"
    git push
    ```
 
@@ -201,7 +208,7 @@ Update README badges with actual values once integrated:
 
 ```markdown
 [![CI](https://github.com/boniface/open-payments-java/workflows/CI/badge.svg)](https://github.com/boniface/open-payments-java/actions)
-[![codecov](https://codecov.io/gh/yourusername/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/boniface/open-payments-java)
+[![codecov](https://codecov.io/gh/boniface/open-payments-java/branch/main/graph/badge.svg)](https://codecov.io/gh/boniface/open-payments-java)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=boniface_open-payments-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=boniface_open-payments-java)
 [![Maven Central](https://img.shields.io/maven-central/v/zm.hashcode/open-payments-java.svg)](https://search.maven.org/artifact/zm.hashcode/open-payments-java)
 ```
@@ -226,22 +233,22 @@ open build/reports/jacoco/test/html/index.html
 
 # Commit formatted code
 git add .
-git commit -m "style: apply code formatting"
+git commit -m "Apply code formatting"
 ```
 
 ### Signing Fails
 ```bash
 # Verify GPG key is configured
-echo $GPG_PRIVATE_KEY | base64 -d | gpg --import
+echo $GPG_PRIVATE_KEY | gpg --import
 
 # Test signing locally
 ./gradlew signMavenJavaPublication
 ```
 
 ### Maven Central Sync Issues
-- Wait 10-30 minutes after release
+- Wait 15-30 minutes after release
 - Check https://repo1.maven.org/maven2/zm/hashcode/open-payments-java/
-- Verify in Sonatype Nexus: https://s01.oss.sonatype.org/
+- Verify in Central Portal: https://central.sonatype.com/publishing
 
 ## Best Practices
 
@@ -263,13 +270,15 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ### Versioning
 Follow [Semantic Versioning](https://semver.org/):
-- MAJOR: Breaking changes
-- MINOR: New features (backward compatible)
-- PATCH: Bug fixes (backward compatible)
+- **0.x.y** - Pre-1.0 development (API may change)
+- **1.0.0** - First stable release
+- **MAJOR** - Breaking changes
+- **MINOR** - New features (backward compatible)
+- **PATCH** - Bug fixes (backward compatible)
 
 ## Resources
 
-- [Maven Central Publishing Guide](https://central.sonatype.org/publish/publish-guide/)
+- [Maven Central Portal Documentation](https://central.sonatype.org/publish/publish-portal-gradle/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [JaCoCo Documentation](https://www.jacoco.org/jacoco/trunk/doc/)
 - [SpotBugs Manual](https://spotbugs.readthedocs.io/)
