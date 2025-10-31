@@ -420,7 +420,7 @@ ls -lh ~/.gnupg/secring.gpg
 **Problem:** Invalid or expired Central Portal token
 
 **Solution:**
-1. Go to https://central.sonatype.com/account
+1. Go to https://central.sonatype.com/usertoken
 2. Click "Generate User Token" (revokes old token)
 3. Update credentials:
    - **Local:** Update `~/.gradle/gradle.properties`
