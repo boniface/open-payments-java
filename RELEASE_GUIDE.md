@@ -19,18 +19,19 @@ Complete guide for publishing `open-payments-java` to Maven Central using automa
 
 ## Overview
 
-This project is configured to publish to Maven Central via the **Central Portal** API:
+This project is configured to publish to Maven Central via **JReleaser** and the **Central Portal** API:
 
-- **Publishing Endpoint:** `https://central.sonatype.com`
-- **Namespace:** `zm.hashcode` 
+- **Publishing Tool:** JReleaser 1.14.0
+- **Publishing Endpoint:** `https://central.sonatype.com/api/v1/publisher`
+- **Namespace:** `zm.hashcode`
 - **Artifact:** `open-payments-java`
 - **Group ID:** `zm.hashcode`
-- **Authentication:** Token-based 
+- **Authentication:** Token-based
 - **Current Version:** `0.1.0` (pre-1.0 development)
 
 **Publication Methods:**
-1. **Automated (Recommended):** Push a git tag → GitHub Actions publishes automatically
-2. **Manual (Fallback):** Run Gradle commands locally
+1. **Automated (Recommended):** Push a git tag → GitHub Actions publishes automatically via JReleaser
+2. **Manual (Fallback):** Run JReleaser Gradle tasks locally
 
 ---
 
@@ -132,50 +133,92 @@ gpg --keyserver keys.openpgp.org --recv-keys ABCD1234EFGH5678IJKL9012MNOP3456QRS
 
 Go to: `https://github.com/boniface/open-payments-java/settings/secrets/actions`
 
-Add these **5 required secrets**:
+Add these **6 required secrets for JReleaser**:
 
 | Secret Name | Value | How to Get |
 |-------------|-------|------------|
-| `GPG_PRIVATE_KEY` | ASCII armored GPG private key | `gpg --export-secret-keys --armor YOUR_KEY_ID` |
-| `GPG_PASSPHRASE` | Your GPG key passphrase | The password you chose during `gpg --gen-key` |
-| `SIGNING_KEY_ID` | Last 8 characters of GPG key ID | From `gpg --list-keys` (e.g., `QRST7890`) |
-| `CENTRAL_PORTAL_USERNAME` | Central Portal token username | From step 2 above |
-| `CENTRAL_PORTAL_PASSWORD` | Central Portal token password | From step 2 above |
+| `JRELEASER_GPG_PUBLIC_KEY` | ASCII armored GPG public key | `gpg --export --armor YOUR_KEY_ID` |
+| `JRELEASER_GPG_SECRET_KEY` | ASCII armored GPG private key | `gpg --export-secret-keys --armor YOUR_KEY_ID` |
+| `JRELEASER_GPG_PASSPHRASE` | Your GPG key passphrase | The password you chose during `gpg --gen-key` |
+| `JRELEASER_GITHUB_TOKEN` | GitHub Personal Access Token | Create at https://github.com/settings/tokens |
+| `JRELEASER_MAVENCENTRAL_USERNAME` | Central Portal token username | From step 2 above |
+| `JRELEASER_MAVENCENTRAL_PASSWORD` | Central Portal token password | From step 2 above |
 
-**Example: Getting GPG_PRIVATE_KEY**
+**Example: Getting GPG Keys for JReleaser**
 
 ```bash
+# Export public key in ASCII armor format
+gpg --export --armor ABCD1234EFGH5678IJKL9012MNOP3456QRST7890
+
 # Export private key in ASCII armor format
 gpg --export-secret-keys --armor ABCD1234EFGH5678IJKL9012MNOP3456QRST7890
 
 # Copy the ENTIRE output (including BEGIN/END lines):
-# -----BEGIN PGP PRIVATE KEY BLOCK-----
+# -----BEGIN PGP PUBLIC/PRIVATE KEY BLOCK-----
 # ...
-# -----END PGP PRIVATE KEY BLOCK-----
+# -----END PGP PUBLIC/PRIVATE KEY BLOCK-----
 ```
+
+**Creating GitHub Token:**
+1. Go to https://github.com/settings/tokens/new
+2. Select scope: `repo` (Full control of private repositories)
+3. Generate token and copy it
 
 ### 5. Configure Local Credentials (For Manual Releases)
 
-**Option A: User-level configuration** (recommended - keeps secrets out of repo)
+**Option A: Environment Variables** (recommended for JReleaser)
+
+Add to your `~/.zshrc` or `~/.bashrc`:
+
+```bash
+# JReleaser GPG Signing
+export JRELEASER_GPG_PASSPHRASE="your-gpg-passphrase"
+export JRELEASER_GPG_PUBLIC_KEY="$(gpg --export --armor YOUR_KEY_ID)"
+export JRELEASER_GPG_SECRET_KEY="$(gpg --export-secret-keys --armor YOUR_KEY_ID)"
+
+# JReleaser GitHub Token
+export JRELEASER_GITHUB_TOKEN="your-github-token"
+
+# JReleaser Maven Central Authentication
+export JRELEASER_MAVENCENTRAL_USERNAME="your-token-username"
+export JRELEASER_MAVENCENTRAL_PASSWORD="your-token-password"
+```
+
+Then reload your shell:
+```bash
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+**Option B: Gradle Properties** (alternative)
 
 Create/edit `~/.gradle/gradle.properties`:
 
 ```properties
-# GPG Signing
-signing.keyId=QRST7890
-signing.password=your-gpg-passphrase
-signing.secretKeyRingFile=/[HOME DIRECTORY]/.gnupg/secring.gpg
+# JReleaser GPG Signing
+JRELEASER_GPG_PASSPHRASE=your-gpg-passphrase
+JRELEASER_GPG_PUBLIC_KEY=<path-to-public-key.asc>
+JRELEASER_GPG_SECRET_KEY=<path-to-secret-key.asc>
 
-# Central Portal Authentication
-centralPortalUsername=your-token-username
-centralPortalPassword=your-token-password
+# JReleaser GitHub Token
+JRELEASER_GITHUB_TOKEN=your-github-token
+
+# JReleaser Maven Central Authentication
+JRELEASER_MAVENCENTRAL_USERNAME=your-token-username
+JRELEASER_MAVENCENTRAL_PASSWORD=your-token-password
 ```
 
-**Export Secret Key for Gradle (GPG 2.1+)**
+**Export GPG Keys to Files (for Option B)**
 
 ```bash
-# Export to legacy format for Gradle
-gpg --export-secret-keys > ~/.gnupg/secring.gpg
+# Export public key
+gpg --export --armor YOUR_KEY_ID > ~/.gnupg/public-key.asc
+
+# Export secret key
+gpg --export-secret-keys --armor YOUR_KEY_ID > ~/.gnupg/secret-key.asc
+
+# Update gradle.properties with paths
+JRELEASER_GPG_PUBLIC_KEY=/Users/yourusername/.gnupg/public-key.asc
+JRELEASER_GPG_SECRET_KEY=/Users/yourusername/.gnupg/secret-key.asc
 ```
 
 ---
@@ -351,27 +394,47 @@ ls -lh build/libs/
 # - open-payments-java-0.1.0-javadoc.jar
 ```
 
-### Step 3: Publish to Central Portal
+### Step 3: Publish to Central Portal with JReleaser
 
-Ensure you have configured `~/.gradle/gradle.properties` with credentials (see Prerequisites).
+Ensure you have configured JReleaser credentials as environment variables (see Prerequisites).
 
 ```bash
-# Publish to Maven Central (signs and uploads)
-./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+# Build and publish to staging repository
+./gradlew clean build publishMavenPublicationToMavenRepository
+
+# Deploy to Maven Central via JReleaser (full release process)
+./gradlew jreleaserFullRelease --no-configuration-cache
 
 # Or in separate steps for more control:
-./gradlew publishToSonatype                          # Upload to staging
-./gradlew closeAndReleaseSonatypeStagingRepository   # Release to Central
+./gradlew jreleaserDeploy --no-configuration-cache   # Deploy to Maven Central
+./gradlew jreleaserRelease --no-configuration-cache  # Create GitHub release
 ```
+
+**Note:** JReleaser tasks require `--no-configuration-cache` flag due to compatibility with Gradle 9.1's configuration cache.
 
 **What happens:**
 1. Gradle builds all artifacts (JAR, sources, javadoc)
-2. Signs each artifact with your GPG key
-3. Uploads to Central Portal staging repository
-4. Validates artifacts (POM, signatures, required files)
-5. Releases to Maven Central (public within 15-30 minutes)
+2. JReleaser signs each artifact with your GPG key
+3. Uploads to Central Portal via API
+4. Creates GitHub release with changelog
+5. Validates and publishes to Maven Central (public within 15-30 minutes)
 
-### Step 4: Create GitHub Release (Manual)
+### Step 4: Verify Release
+
+JReleaser automatically creates the GitHub release. Verify it was created:
+
+```bash
+# Check GitHub releases
+open https://github.com/hashcode-zm/open-payments-java/releases
+
+# Or list releases via CLI
+gh release list
+
+# View specific release
+gh release view v0.1.0
+```
+
+If you need to create a release manually:
 
 ```bash
 # Via GitHub CLI
@@ -383,36 +446,41 @@ gh release create v0.1.0 \
   build/libs/open-payments-java-0.1.0-javadoc.jar
 
 # Or via web interface:
-# https://github.com/boniface/open-payments-java/releases/new
+# https://github.com/hashcode-zm/open-payments-java/releases/new
 ```
 
 ---
 
 ## Troubleshooting
 
-### ❌ "No value has been specified for property 'signing.keyId'"
+### ❌ "JRELEASER_GPG_PASSPHRASE is not set"
 
-**Problem:** GPG signing not configured
+**Problem:** JReleaser GPG credentials not configured
 
 **Solution:**
 ```bash
-# Configure in ~/.gradle/gradle.properties
-signing.keyId=QRST7890
-signing.password=your-gpg-passphrase
-signing.secretKeyRingFile=/Users/yourusername/.gnupg/secring.gpg
+# Set environment variables (add to ~/.zshrc or ~/.bashrc)
+export JRELEASER_GPG_PASSPHRASE="your-gpg-passphrase"
+export JRELEASER_GPG_PUBLIC_KEY="$(gpg --export --armor YOUR_KEY_ID)"
+export JRELEASER_GPG_SECRET_KEY="$(gpg --export-secret-keys --armor YOUR_KEY_ID)"
+
+# Reload shell
+source ~/.zshrc
 ```
 
 ### ❌ "Unable to find secret key"
 
-**Problem:** Secret keyring not found
+**Problem:** GPG keys not properly exported
 
 **Solution:**
 ```bash
-# Export secret key to legacy format
-gpg --export-secret-keys > ~/.gnupg/secring.gpg
+# Export keys to files
+gpg --export --armor YOUR_KEY_ID > ~/.gnupg/public-key.asc
+gpg --export-secret-keys --armor YOUR_KEY_ID > ~/.gnupg/secret-key.asc
 
-# Verify location
-ls -lh ~/.gnupg/secring.gpg
+# Set in gradle.properties
+JRELEASER_GPG_PUBLIC_KEY=/Users/yourusername/.gnupg/public-key.asc
+JRELEASER_GPG_SECRET_KEY=/Users/yourusername/.gnupg/secret-key.asc
 ```
 
 ### ❌ Publishing Fails with "401 Unauthorized"
@@ -420,11 +488,11 @@ ls -lh ~/.gnupg/secring.gpg
 **Problem:** Invalid or expired Central Portal token
 
 **Solution:**
-1. Go to https://central.sonatype.com/usertoken
+1. Go to https://central.sonatype.com/account
 2. Click "Generate User Token" (revokes old token)
 3. Update credentials:
-   - **Local:** Update `~/.gradle/gradle.properties`
-   - **CI/CD:** Update GitHub secrets `CENTRAL_PORTAL_USERNAME` and `CENTRAL_PORTAL_PASSWORD`
+   - **Local:** Update environment variables `JRELEASER_MAVENCENTRAL_USERNAME` and `JRELEASER_MAVENCENTRAL_PASSWORD`
+   - **CI/CD:** Update GitHub secrets `JRELEASER_MAVENCENTRAL_USERNAME` and `JRELEASER_MAVENCENTRAL_PASSWORD`
 
 ### ❌ Signature Verification Fails
 
@@ -480,19 +548,19 @@ The release workflow (`.github/workflows/release.yml`) is triggered when you pus
 1. ✅ Validates Gradle wrapper
 2. ✅ Runs all quality checks (tests, coverage, PMD, SpotBugs)
 3. ✅ Builds all artifacts (JAR, sources, javadoc)
-4. ✅ Imports GPG key for signing
-5. ✅ Signs artifacts with GPG
-6. ✅ Publishes to Maven Central via Central Portal
-7. ✅ Creates GitHub Release with artifacts
-8. ✅ Deploys JavaDoc to GitHub Pages
-9. ✅ Verifies artifact availability on Maven Central
+4. ✅ Signs artifacts with GPG via JReleaser
+5. ✅ Publishes to Maven Central via Central Portal API (JReleaser)
+6. ✅ Creates GitHub Release with changelog (JReleaser)
+7. ✅ Deploys JavaDoc to GitHub Pages
+8. ✅ Verifies artifact availability on Maven Central
 
-**Required GitHub Secrets:**
-- `GPG_PRIVATE_KEY` - ASCII armored GPG private key
-- `GPG_PASSPHRASE` - GPG key passphrase
-- `SIGNING_KEY_ID` - Last 8 characters of GPG key ID
-- `CENTRAL_PORTAL_USERNAME` - Central Portal token username
-- `CENTRAL_PORTAL_PASSWORD` - Central Portal token password
+**Required GitHub Secrets (JReleaser):**
+- `JRELEASER_GPG_PUBLIC_KEY` - ASCII armored GPG public key
+- `JRELEASER_GPG_SECRET_KEY` - ASCII armored GPG private key
+- `JRELEASER_GPG_PASSPHRASE` - GPG key passphrase
+- `JRELEASER_GITHUB_TOKEN` - GitHub Personal Access Token
+- `JRELEASER_MAVENCENTRAL_USERNAME` - Central Portal token username
+- `JRELEASER_MAVENCENTRAL_PASSWORD` - Central Portal token password
 
 ---
 
@@ -524,9 +592,9 @@ git commit -m "Release version 0.1.0"
 git tag -a v0.1.0 -m "Release version 0.1.0"
 git push origin feature/maven-publish && git push origin v0.1.0
 
-# Manual Release
-./gradlew clean test build
-./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+# Manual Release with JReleaser
+./gradlew clean test build publishMavenPublicationToMavenRepository
+./gradlew jreleaserFullRelease --no-configuration-cache
 
 # Verify Publication
 curl -I "https://repo1.maven.org/maven2/zm/hashcode/open-payments-java/0.1.0/open-payments-java-0.1.0.pom"
@@ -572,15 +640,17 @@ version=2.0.0  # Breaking changes
 
 ## Resources
 
+- **JReleaser Documentation:** https://jreleaser.org/guide/latest/index.html
+- **JReleaser Maven Central Deploy:** https://jreleaser.org/guide/latest/examples/maven/maven-central.html
 - **Central Portal Documentation:** https://central.sonatype.org/publish/publish-portal-gradle/
-- **Gradle Nexus Publish Plugin:** https://github.com/gradle-nexus/publish-plugin
 - **GPG Signing Guide:** https://central.sonatype.org/publish/requirements/gpg/
 - **Semantic Versioning:** https://semver.org/
-- **Project Issues:** https://github.com/boniface/open-payments-java/issues
+- **Project Issues:** https://github.com/hashcode-zm/open-payments-java/issues
 
 ---
 
-**Last Updated:** 2025-10-22
-**Publishing Method:** Maven Central Portal (current standard)
+**Last Updated:** 2025-10-31
+**Publishing Tool:** JReleaser 1.14.0
+**Publishing Method:** Maven Central Portal via JReleaser
 **Namespace:** `zm.hashcode` (verified ✓)
 **Current Version:** `0.1.0`

@@ -1,81 +1,144 @@
-import java.time.Duration
+import org.jreleaser.model.Active
 
 plugins {
-    `java-library`
+    java
     `maven-publish`
-    signing
-    id("io.github.gradle-nexus.publish-plugin")
+    id("org.jreleaser")
+    id("io.github.sgtsilvio.gradle.metadata")
 }
 
 java {
-    withJavadocJar()
     withSourcesJar()
+    withJavadocJar()
+}
+
+metadata {
+    readableName = "Open Payments Java SDK"
+    description = "Java SDK for Open Payments API - facilitating interoperable payment setup and completion"
+    license { apache2() }
+    developers {
+        register("boniface") {
+            fullName.set("Boniface Kabaso")
+            email.set("550236+boniface@users.noreply.github.com")
+        }
+        register("espoir") {
+            fullName.set("Espoir Diteekemena")
+            email.set("47171587+ESPOIR-DITE@users.noreply.github.com")
+        }
+    }
+    github {
+        org.set("hashcode-zm")
+        repo.set("open-payments-java")
+    }
 }
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
+        create<MavenPublication>("maven") {
+            groupId = "zm.hashcode"
+            artifactId = "open-payments-java"
+            version = "0.1.0"
+
             from(components["java"])
 
             pom {
-                name = "Open Payments Java SDK"
-                description = "Java SDK for Open Payments API - facilitating interoperable payment setup and completion"
-                url = "https://github.com/boniface/open-payments-java"
+                name.set("Open Payments Java SDK")
+                description.set("Java SDK for Open Payments API - facilitating interoperable payment setup and completion")
+                url.set("https://github.com/hashcode-zm/open-payments-java")
+                inceptionYear.set("2025")
 
                 licenses {
                     license {
-                        name = "The Apache License, Version 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        name.set("Apache-2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
                     }
                 }
 
                 developers {
                     developer {
-                        id = "boniface"
-                        name = "Boniface Kabaso"
-                        email = "550236+boniface@users.noreply.github.com"
+                        id.set("boniface")
+                        name.set("Boniface Kabaso")
+                        email.set("550236+boniface@users.noreply.github.com")
                     }
                     developer {
-                        id = "espoir"
-                        name = "Espoir Diteekemena"
-                        email = "47171587+ESPOIR-DITE@users.noreply.github.com"
+                        id.set("espoir")
+                        name.set("Espoir Diteekemena")
+                        email.set("47171587+ESPOIR-DITE@users.noreply.github.com")
                     }
                 }
 
                 scm {
-                    connection = "scm:git:git://github.com/boniface/open-payments-java.git"
-                    developerConnection = "scm:git:ssh://github.com/boniface/open-payments-java.git"
-                    url = "https://github.com/boniface/open-payments-java"
+                    url.set("https://github.com/hashcode-zm/open-payments-java")
+                    connection.set("scm:git:https://github.com/hashcode-zm/open-payments-java.git")
+                    developerConnection.set("scm:git:ssh://git@github.com/hashcode-zm/open-payments-java.git")
                 }
             }
         }
     }
-}
 
-signing {
-    // Only sign if publishing to Maven Central
-    setRequired { gradle.taskGraph.hasTask("publish") }
-    sign(publishing.publications["mavenJava"])
-}
-
-nexusPublishing {
     repositories {
-        sonatype {
-            // Maven Central Portal
-            nexusUrl = uri("https://central.sonatype.com")
+        maven {
+            url = uri(layout.buildDirectory.dir("staging-deploy"))
+        }
+    }
+}
 
-            // Use Central Portal token authentication
-            // Set via environment variables or ~/.gradle/gradle.properties:
-            // centralPortalUsername=<your-token-username>
-            // centralPortalPassword=<your-token-password>
-            username = project.findProperty("centralPortalUsername") as String?
-                ?: System.getenv("CENTRAL_PORTAL_USERNAME")
-            password = project.findProperty("centralPortalPassword") as String?
-                ?: System.getenv("CENTRAL_PORTAL_PASSWORD")
+jreleaser {
+    project {
+        description.set("Java SDK for Open Payments API - facilitating interoperable payment setup and completion")
+        authors.set(listOf("Boniface Kabaso", "Espoir Diteekemena"))
+        license.set("Apache-2.0")
+        links {
+            homepage.set("https://github.com/hashcode-zm/open-payments-java")
+        }
+        inceptionYear.set("2025")
+        copyright.set("2025 Boniface Kabaso")
+    }
+
+    release {
+        github {
+            repoOwner.set("hashcode-zm")
+            name.set("open-payments-java")
+            tagName.set("{{projectVersion}}")
+            releaseName.set("Release {{projectVersion}}")
+            overwrite.set(false)
+            update {
+                enabled.set(true)
+            }
+            changelog {
+                enabled.set(true)
+                formatted.set(Active.ALWAYS)
+                preset.set("conventional-commits")
+                contributors {
+                    enabled.set(true)
+                }
+                append {
+                    enabled.set(true)
+                    target.set(file("CHANGELOG.md"))
+                    content.set("""
+                        ## [{{projectVersion}}] - {{releaseDate}}
+                        {{changelogChanges}}
+                        {{changelogContributors}}
+                    """.trimIndent())
+                }
+            }
         }
     }
 
-    // Timeout configuration for large uploads
-    connectTimeout = Duration.ofMinutes(3)
-    clientTimeout = Duration.ofMinutes(3)
+    signing {
+        active = Active.ALWAYS
+        armored = true
+    }
+
+    deploy {
+        maven {
+            mavenCentral {
+                create("sonatype") {
+                    active = Active.ALWAYS
+                    url = "https://central.sonatype.com/api/v1/publisher"
+                    stagingRepository(layout.buildDirectory.dir("staging-deploy").get().toString())
+                }
+            }
+        }
+    }
 }
