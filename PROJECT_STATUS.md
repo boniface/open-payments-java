@@ -172,26 +172,26 @@ A modern Java 25 SDK for the Open Payments API, featuring clean architecture, ty
 ### Completed Implementations
 
 #### Authentication & Authorization
-- ✅ Ed25519 cryptography
-- ✅ HTTP message signatures (RFC 9421)
-- ✅ GNAP protocol (RFC 9635)
-- ✅ Token lifecycle management
-- ✅ Client key generation and management
+- Ed25519 cryptography
+- HTTP message signatures (RFC 9421)
+- GNAP protocol (RFC 9635)
+- Token lifecycle management
+- Client key generation and management
 
 #### HTTP Infrastructure
-- ✅ HTTP client abstraction
-- ✅ Request/Response interceptors
-- ✅ Logging with security (sensitive data masking)
-- ✅ Authentication (multiple schemes)
-- ✅ Error handling (structured JSON parsing)
-- ✅ Resilience (retry, circuit breaker) - already existed
+- HTTP client abstraction
+- Request/Response interceptors
+- Logging with security (sensitive data masking)
+- Authentication (multiple schemes)
+- Error handling (structured JSON parsing)
+- Resilience (retry, circuit breaker) - already existed
 
 #### Data Models
-- ✅ Immutable records for all models
-- ✅ Builder patterns for complex objects
-- ✅ Factory methods for common patterns
-- ✅ Optional support with Jackson
-- ✅ Thread-safe implementations
+- Immutable records for all models
+- Builder patterns for complex objects
+- Factory methods for common patterns
+- Optional support with Jackson
+- Thread-safe implementations
 
 ---
 
@@ -315,25 +315,25 @@ This phase implemented the complete Open Payments resource services that integra
 
 All completed phases meet the following quality standards:
 
-✅ **Code Quality**
+**Code Quality**
 - Zero PMD violations in implemented code
 - Checkstyle compliant
 - Spotless formatting applied
 - No compiler warnings
 
-✅ **Testing**
+**Testing**
 - 100% test pass rate
 - Unit tests for all public APIs
 - Edge cases covered
 - Error scenarios tested
 
-✅ **Documentation**
+**Documentation**
 - JavaDoc for all public classes/methods
 - Package-level documentation
 - Usage examples provided
 - README kept current
 
-✅ **Security**
+**Security**
 - Sensitive data masking in logs
 - Secure key generation
 - Thread-safe implementations
@@ -449,14 +449,14 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 Licensed under Apache License 2.0 - see [LICENSE](LICENSE) for details.
 
 **Why Apache 2.0?**
-- ✅ Commercial use allowed
-- ✅ Patent grant included
-- ✅ Industry standard for Java
-- ✅ Compatible with most licenses
+- Commercial use allowed
+- Patent grant included
+- Industry standard for Java
+- Compatible with most licenses
 
 ---
 
 **Last Updated**: 2025-10-16
 **Version**: 0.1.0-SNAPSHOT
-**Status**: ✅ Core Implementation Complete (Phases 1-7)
+**Status**: Core Implementation Complete (Phases 1-7)
 **Next**: Phase 8 - Integration Testing
